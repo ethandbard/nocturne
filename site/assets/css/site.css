@@ -350,25 +350,6 @@ hr.rule { border: 0; border-top: 1px solid var(--edge); margin: 3rem 0; }
 .cord__knob { fill: var(--ink-soft); }
 .cord:hover .cord__knob { fill: var(--green); }
 
-/* ---------------------------------------------------------- chrome shell --- */
-
-/* The top window is rewritten into a chrome shell so the radio can outlive
-   room changes. #room is the real page; parent scanlines would stack on the
-   framed ones, so they go away here. */
-html[data-shell] body::before,
-html[data-shell] body::after { display: none; }
-html[data-shell] body { background: #000; overflow: hidden; }
-html[data-shell] #room {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
-  z-index: 0;
-  background: var(--bg);
-}
-html[data-shell] #room:focus { outline: none; }
-
 /* --------------------------------------------------------------- radio --- */
 
 /* Fixed to the bottom-left of every page — the cord owns the top-right, so

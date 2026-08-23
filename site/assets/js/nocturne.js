@@ -229,19 +229,12 @@
       setLights(read(KEY_LIGHTS, "on"));
     }
 
-    var framed = window !== window.top;
-    var shell = document.documentElement.getAttribute("data-shell") === "true";
+    write(KEY_VISITS, (read(KEY_VISITS, 0) || 0) + 1);
 
-    /* The top window is a chrome shell (cord + radio) around #room. Moths,
-       Konami, and visit counting belong to the framed page so they re-bind
-       on every room change and do not double-fire from the parent. */
-    if (!shell) {
-      write(KEY_VISITS, (read(KEY_VISITS, 0) || 0) + 1);
-      wireMoths();
-      wireKonami();
-      paintCount();
-    }
-    if (!framed) wireCord();
+    wireCord();
+    wireMoths();
+    wireKonami();
+    paintCount();
   }
 
   /* --------------------------------------------------------------- api --- */
@@ -274,6 +267,13 @@
       node.classList.remove("moth--locked");
       node.style.opacity = "1";
       node.style.pointerEvents = "auto";
+    },
+
+    /* Re-bind moths after a same-document room swap. The cord and Konami
+       stay on the window and must not be wired a second time. */
+    refresh: function () {
+      wireMoths();
+      paintCount();
     }
   };
 

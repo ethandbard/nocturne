@@ -5,17 +5,14 @@
  * Nightride FM's mounts send CORS * and honour a site Referer, which is
  * what lets the oscilloscope read the stream.
  *
- * The player lives on the top window. shell-boot.js rewrites that window into
- * a chrome shell and loads each room in #room, so walking the arcade does not
- * tear the Audio element down. Framed copies of this file no-op. A real
- * top-level load (new tab, refresh) still starts off — browsers will not
- * autoplay with sound before a gesture.
+ * Same-origin clicks are intercepted so the next room is swapped into this
+ * document instead of loaded as a new one. The Audio element stays mounted.
+ * A refresh or a new tab still starts off — browsers will not autoplay with
+ * sound before a gesture.
  */
 
 (function () {
   "use strict";
-
-  if (window !== window.top) return;
 
   var STATIONS = [
     {
@@ -172,12 +169,6 @@
 
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") setOpen(false);
-    });
-
-    /* Clicks inside #room happen in another document, so the usual outside-
-       click listener never sees them. Focusing the frame blurs this window. */
-    window.addEventListener("blur", function () {
-      setOpen(false);
     });
 
     paintStation();
@@ -385,6 +376,167 @@
     eqCtx.stroke();
   }
 
+  /* -------------------------------------------------------------- rooms --- */
+
+  /* Intercept same-origin clicks and swap the document body around the radio
+     instead of following the link. Game loops and window listeners from the
+     previous room are dropped by bumping a generation counter and removing
+     anything bound after this wrap. */
+  var rafGen = 0;
+  var origRAF = window.requestAnimationFrame;
+  var origWinAdd = window.addEventListener;
+  var origWinRemove = window.removeEventListener;
+  var pageWinListeners = [];
+  var visiting = false;
+  var persistReady = false;
+
+  function wrapPageListeners() {
+    window.requestAnimationFrame = function (cb) {
+      var g = rafGen;
+      return origRAF.call(window, function (t) {
+        if (g !== rafGen) return;
+        cb(t);
+      });
+    };
+    window.addEventListener = function (type, fn, opts) {
+      pageWinListeners.push([type, fn, opts]);
+      return origWinAdd.call(window, type, fn, opts);
+    };
+    persistReady = true;
+  }
+
+  function leaveRoom() {
+    rafGen += 1;
+    var i;
+    for (i = 0; i < pageWinListeners.length; i++) {
+      try {
+        origWinRemove.call(window, pageWinListeners[i][0], pageWinListeners[i][1], pageWinListeners[i][2]);
+      } catch (err) {}
+    }
+    pageWinListeners = [];
+    window.dispatchEvent(new Event("nocturne:leave"));
+  }
+
+  function isSharedScript(src) {
+    return /nocturne\.js|radio\.js|shell-boot\.js|shell\.js/.test(src || "");
+  }
+
+  function runRoomScripts(root) {
+    var scripts = root.querySelectorAll("script");
+    var i, old, src, fresh;
+    for (i = 0; i < scripts.length; i++) {
+      old = scripts[i];
+      src = old.getAttribute("src") || "";
+      if (isSharedScript(src)) {
+        if (old.parentNode) old.parentNode.removeChild(old);
+        continue;
+      }
+      fresh = document.createElement("script");
+      if (src) {
+        fresh.src = src;
+        fresh.async = false;
+      } else {
+        fresh.textContent = old.textContent;
+      }
+      old.parentNode.replaceChild(fresh, old);
+    }
+  }
+
+  function applyRoom(html, href) {
+    var doc = new DOMParser().parseFromString(html, "text/html");
+    var keep = [];
+    var nodes, i, n, imported, style, bodyStyle, insertBefore;
+
+    leaveRoom();
+
+    document.title = doc.title;
+
+    document.querySelectorAll("style[data-room]").forEach(function (el) {
+      el.parentNode.removeChild(el);
+    });
+    nodes = doc.querySelectorAll("head style");
+    for (i = 0; i < nodes.length; i++) {
+      style = document.createElement("style");
+      style.setAttribute("data-room", "true");
+      style.textContent = nodes[i].textContent;
+      document.head.appendChild(style);
+    }
+
+    bodyStyle = doc.body.getAttribute("style");
+    if (bodyStyle) document.body.setAttribute("style", bodyStyle);
+    else document.body.removeAttribute("style");
+
+    [".radio", ".cord", ".toast-rail"].forEach(function (sel) {
+      n = document.querySelector(sel);
+      if (n) keep.push(n);
+    });
+
+    nodes = Array.prototype.slice.call(document.body.childNodes);
+    for (i = 0; i < nodes.length; i++) {
+      if (keep.indexOf(nodes[i]) === -1) document.body.removeChild(nodes[i]);
+    }
+
+    insertBefore = keep[0] || null;
+    nodes = Array.prototype.slice.call(doc.body.childNodes);
+    for (i = 0; i < nodes.length; i++) {
+      n = nodes[i];
+      if (n.nodeType === 1 && n.tagName === "SCRIPT" && isSharedScript(n.getAttribute("src"))) {
+        continue;
+      }
+      imported = document.importNode(n, true);
+      document.body.insertBefore(imported, insertBefore);
+    }
+
+    if (window.Nocturne && typeof window.Nocturne.refresh === "function") {
+      window.Nocturne.refresh();
+    }
+    runRoomScripts(document.body);
+    window.scrollTo(0, 0);
+    history.pushState({ nocturne: true }, "", href);
+  }
+
+  function visit(href) {
+    if (visiting) return;
+    visiting = true;
+    fetch(href, { credentials: "same-origin" }).then(function (res) {
+      if (!res.ok) throw new Error("failed");
+      return res.text();
+    }).then(function (html) {
+      applyRoom(html, href);
+    }).catch(function () {
+      window.location.href = href;
+    }).then(function () {
+      visiting = false;
+    });
+  }
+
+  function bindPersist() {
+    wrapPageListeners();
+    document.addEventListener("click", function (event) {
+      var a, url;
+      if (event.defaultPrevented || event.button !== 0) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      a = event.target.closest ? event.target.closest("a") : null;
+      if (!a || !a.href || a.hasAttribute("download")) return;
+      if (a.target && a.target !== "" && a.target !== "_self") return;
+      try {
+        url = new URL(a.href, location.href);
+      } catch (err) {
+        return;
+      }
+      if (url.origin !== location.origin) return;
+      if (url.pathname === location.pathname && url.search === location.search && url.hash) return;
+      event.preventDefault();
+      visit(url.pathname + url.search + url.hash);
+    });
+    origWinAdd.call(window, "popstate", function () {
+      window.location.reload();
+    });
+  }
+
+  /* popstate reloads so Back is a real document (Audio dies, which matches
+     a browser back). Forward-clicks through the arcade keep the player. */
+
   /* --------------------------------------------------------------- boot --- */
 
   function boot() {
@@ -397,9 +549,12 @@
     build();
     window.addEventListener("resize", fitEq);
     window.addEventListener("pagehide", stopStream);
+    bindPersist();
   }
 
-  if (document.readyState === "loading") {
+  if (document.body) {
+    boot();
+  } else if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", boot);
   } else {
     boot();
