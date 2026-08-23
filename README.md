@@ -29,12 +29,11 @@ and WYRM have each been finished once, and has nothing to do with the moths.
 
 ## The radio
 
-A small tuning dial sits in the bottom-left corner of every page, playing a
-curated set of lo-fi/synthwave YouTube live streams through the YouTube
-IFrame API. It does not survive a navigation — this is a multi-page static
-site, so every page load tears the player down — but it remembers which
-station and volume you had, and picks up from there the next time you turn
-it on. See `site/assets/js/radio.js`.
+A small FM tuner sits in the bottom-left corner of every page. It plays a
+curated set of lo-fi and synthwave internet radio streams. Playback stops
+when you leave a page, because every load tears the player down. Station
+and volume persist in `localStorage`, so the next time you turn it on it
+picks up where you left off. See `site/assets/js/radio.js`.
 
 ## Running it locally
 
@@ -59,7 +58,7 @@ site/
   assets/css/         Single stylesheet; both lighting states live here.
   assets/js/
     nocturne.js       Shared layer: lighting, moths, scores, toasts, Konami.
-    radio.js          The corner radio: stations, volume, YouTube IFrame API.
+    radio.js          The corner radio: stations, volume, HTML5 audio streams.
     pulse.js  lattice.js  echo.js  mothgame.js
     veil.js  splice.js  wyrm.js  static.js
   _headers            Noindex on `*.pages.dev` preview URLs.

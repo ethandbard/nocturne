@@ -186,7 +186,7 @@ html[data-lights="out"] .sign { color: #cfc8ee; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sign .flick, .mark .dot { animation: none; }
+  .sign .flick, .mark .dot, .radio__led { animation: none; }
 }
 
 /* ------------------------------------------------------------ cabinets --- */
@@ -353,8 +353,8 @@ hr.rule { border: 0; border-top: 1px solid var(--edge); margin: 3rem 0; }
 /* --------------------------------------------------------------- radio --- */
 
 /* Fixed to the bottom-left of every page — the cord owns the top-right, so
-   the two never collide. A small tab that expands upward into a panel on
-   click, rather than sitting open by default and competing with the sign. */
+   the two never collide. Collapsed it reads as a small FM chassis, not a
+   round widget; click expands the faceplate upward. */
 .radio {
   position: fixed;
   left: clamp(1rem, 4vw, 2rem);
@@ -364,48 +364,104 @@ hr.rule { border: 0; border-top: 1px solid var(--edge); margin: 3rem 0; }
 }
 
 .radio__tab {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 1px solid var(--edge);
-  background: var(--bg-raised);
-  box-shadow: var(--shadow-lift);
-  cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.5rem;
+  height: 44px;
+  padding: 0 0.7rem 0 0.65rem;
+  border-radius: 10px;
+  border: 1px solid var(--edge);
+  background: linear-gradient(180deg, var(--bg-raised), var(--bg-sunken));
+  box-shadow: var(--shadow-lift);
+  color: var(--ink-soft);
+  cursor: pointer;
   transition: border-color 200ms ease, transform 150ms ease;
 }
 .radio__tab:hover { border-color: color-mix(in srgb, var(--amber) 45%, var(--edge)); }
-.radio__tab:active { transform: scale(0.94); }
+.radio__tab:active { transform: translateY(1px); }
+.radio[data-on="true"] .radio__tab {
+  border-color: color-mix(in srgb, var(--amber) 40%, var(--edge));
+}
 
-.radio__dot {
+.radio__led {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--ink-faint);
+  flex-shrink: 0;
   transition: background 200ms ease, box-shadow 200ms ease;
 }
-.radio[data-on="true"] .radio__dot {
+.radio[data-on="true"] .radio__led {
   background: var(--amber);
   box-shadow: 0 0 calc(12px * var(--glow-strength)) var(--amber);
   animation: breathe 3.4s ease-in-out infinite;
+}
+.radio[data-state="tuning"] .radio__led {
+  animation: radio-tune 0.7s steps(2, end) infinite;
+}
+@keyframes radio-tune {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+.radio__tab-freq {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  min-width: 2.6em;
+  text-align: left;
+}
+.radio[data-on="true"] .radio__tab-freq {
+  color: var(--amber);
+  text-shadow: 0 0 calc(10px * var(--glow-strength)) color-mix(in srgb, var(--amber) 70%, transparent);
+}
+.radio__tab-unit {
+  font-size: 0.58rem;
+  letter-spacing: 0.18em;
+  color: var(--ink-faint);
+}
+.radio__grille {
+  width: 22px;
+  height: 16px;
+  margin-left: 0.15rem;
+  background-image: radial-gradient(circle, var(--ink-faint) 0.65px, transparent 0.8px);
+  background-size: 4px 4px;
+  opacity: 0.55;
+}
+.radio[data-on="true"] .radio__grille {
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--amber) 55%, var(--ink-faint)) 0.65px, transparent 0.8px);
 }
 
 .radio__panel {
   position: absolute;
   left: 0;
   bottom: calc(100% + 0.7rem);
-  width: 232px;
-  background: linear-gradient(180deg, var(--bg-raised), var(--bg-sunken));
+  width: 248px;
+  background-color: var(--bg-sunken);
+  background-image: linear-gradient(180deg, var(--bg-raised), var(--bg-sunken));
   border: 1px solid var(--edge);
   border-radius: 12px;
-  padding: 0.9rem 1rem 1.05rem;
+  padding: 0.95rem 1.05rem 1.1rem;
   box-shadow: var(--shadow-lift);
   opacity: 0;
   transform: translateY(8px);
   pointer-events: none;
+  overflow: hidden;
   transition: opacity 200ms ease, transform 200ms ease;
+}
+.radio__panel::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 2px;
+  background: var(--ink-faint);
+  transition: background 200ms ease, box-shadow 200ms ease;
+}
+.radio[data-on="true"] .radio__panel::before {
+  background: var(--amber);
+  box-shadow: 0 0 calc(14px * var(--glow-strength)) var(--amber);
 }
 .radio[data-open="true"] .radio__panel {
   opacity: 1;
@@ -413,19 +469,56 @@ hr.rule { border: 0; border-top: 1px solid var(--edge); margin: 3rem 0; }
   pointer-events: auto;
 }
 
-.radio__label {
-  margin: 0 0 0.4rem;
-  font-size: 0.66rem;
-  letter-spacing: 0.24em;
+.radio__face {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin: 0.15rem 0 0.15rem;
+}
+.radio__band {
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--ink-faint);
 }
-.radio__station {
-  margin: 0 0 0.8rem;
-  font-size: 0.76rem;
+.radio__freq {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  color: var(--ink-faint);
+  margin: 0;
+}
+.radio[data-on="true"] .radio__freq {
+  color: var(--amber);
+  text-shadow: 0 0 calc(14px * var(--glow-strength)) color-mix(in srgb, var(--amber) 75%, transparent);
+}
+.radio__call {
+  margin: 0.35rem 0 0.55rem;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  color: var(--ink);
+}
+.radio__eq {
+  display: block;
+  width: 100%;
+  height: 36px;
+  margin: 0 0 0.55rem;
+}
+.radio__tag {
+  margin: 0;
+  font-size: 0.72rem;
   line-height: 1.35;
-  min-height: 2.2em;
+  min-height: 1.35em;
   color: var(--ink-soft);
+}
+.radio__via {
+  margin: 0.15rem 0 0.8rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
 }
 .radio__row {
   display: flex;
@@ -435,35 +528,73 @@ hr.rule { border: 0; border-top: 1px solid var(--edge); margin: 3rem 0; }
 }
 .radio__btn {
   flex: 1;
-  padding: 0.4rem 0;
+  padding: 0.45rem 0;
   border-radius: 8px;
   border: 1px solid var(--edge);
   background: var(--bg-sunken);
   color: var(--ink-soft);
   font-family: var(--font-mono);
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   cursor: pointer;
-  transition: border-color 150ms ease, color 150ms ease;
+  transition: border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
 }
 .radio__btn:hover { border-color: color-mix(in srgb, var(--amber) 45%, var(--edge)); color: var(--amber); }
 .radio__power[data-on="true"] {
   color: var(--amber);
   border-color: color-mix(in srgb, var(--amber) 55%, var(--edge));
+  box-shadow: 0 0 calc(16px * var(--glow-strength)) color-mix(in srgb, var(--amber) 30%, transparent);
+}
+.radio__vol-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.radio__vol-mark {
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
 }
 .radio__vol {
-  width: 100%;
-  accent-color: var(--amber);
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--edge);
+  outline: none;
+}
+.radio__vol::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--ink-soft);
+  border: 0;
+  cursor: pointer;
+}
+.radio[data-on="true"] .radio__vol::-webkit-slider-thumb { background: var(--amber); }
+.radio__vol::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--ink-soft);
+  border: 0;
+  cursor: pointer;
+}
+.radio[data-on="true"] .radio__vol::-moz-range-thumb { background: var(--amber); }
+.radio__vol::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--edge);
 }
 
-/* The YouTube iframe itself: real and playing, just too small to matter. Not
-   display:none — some browsers suspend playback on a hidden iframe. */
-.radio__stage {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
+.radio__tab:focus-visible,
+.radio__btn:focus-visible,
+.radio__vol:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--amber) 70%, transparent);
+  outline-offset: 2px;
 }
 
 /* ------------------------------------------------------------- moths --- */
@@ -596,7 +727,7 @@ html[data-lights="out"] .moth--locked { opacity: 0; pointer-events: none; }
 .toast-rail {
   position: fixed;
   left: 50%;
-  bottom: 2rem;
+  bottom: 5.2rem;
   transform: translateX(-50%);
   z-index: 9997;
   display: flex;
@@ -643,5 +774,5 @@ html[data-lights="out"] .moth--locked { opacity: 0; pointer-events: none; }
   .masthead { flex-direction: column; align-items: flex-start; gap: 0.7rem; }
   .cord { right: 1rem; height: 120px; }
   .radio { left: 1rem; }
-  .radio__panel { width: min(232px, calc(100vw - 3rem)); }
+  .radio__panel { width: min(248px, calc(100vw - 3rem)); }
 }

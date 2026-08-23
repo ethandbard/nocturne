@@ -105,10 +105,10 @@ SPLICE, and WYRM have each been finished once.
 
 ## The radio
 
-A tuning dial fixed to the bottom-left corner of every page, backed by the
-YouTube IFrame API and a small curated list of lo-fi/synthwave live streams.
-Power state never survives a navigation on a plain multi-page site like this
-one, so it always starts off — but the chosen station and volume persist in
+A small FM tuner fixed to the bottom-left corner of every page. It plays
+Icecast streams from Nightride FM through HTML5 audio. Power state never
+survives a navigation on a plain multi-page site like this one, so it
+always starts off. The chosen station and volume persist in
 `localStorage` under `nocturne.radio.station` and `nocturne.radio.volume`,
 the same way everything else here persists.
 
@@ -208,7 +208,7 @@ site/
   assets/css/site.css Both lighting states
   assets/js/
     nocturne.js       Lighting, moths, scores, toasts, Konami
-    radio.js          The corner radio
+    radio.js          The corner radio: HTML5 audio streams
     pulse.js  lattice.js  echo.js  mothgame.js
     veil.js  splice.js  wyrm.js  static.js
 ```
