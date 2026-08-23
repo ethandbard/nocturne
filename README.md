@@ -1,8 +1,9 @@
 # NOCTURNE
 
 A small browser arcade that behaves like a place rather than a page. Six
-games sit on the floor, two stay sealed, and the site keeps state across
-pages so what you do in one room shows up in another.
+games sit on the floor, two stay sealed, and a back room sits behind a
+bad address. The site keeps state across pages so what you do in one room
+shows up in another.
 
 Live at **[nocturne.ethandbard.com](https://nocturne.ethandbard.com)**.
 Docs at **[ethandbard.github.io/nocturne](https://ethandbard.github.io/nocturne/)**.
@@ -21,11 +22,16 @@ JavaScript on Cloudflare Pages.
 | SPLICE | Precision | Match every wire terminal to its twin before the panel dies. |
 | WYRM | Reflex | A glowing trail on a dark grid. Classic snake, new coat of paint. |
 | MOTH | Secret | Climb toward a lamp while your glow — and your view — burns down. |
-| STATIC | Secret | One quiet room, once VEIL, SPLICE, and WYRM have each been finished. |
+| STATIC | Secret | Lock drifting stations before the signal dies. |
+| CIPHER | Hidden | A crossword the house wrote about itself. |
+| SEEK | Hidden | Find every named thing in a letter field. |
+| TWIN | Hidden | Flip tiles and match the pair. |
 
-MOTH is not reachable from a fresh visit. It unlocks after all five hidden
+MOTH is not reachable from a fresh visit. It unlocks after all eight hidden
 moths are found. STATIC is a separate secret: it unlocks after VEIL, SPLICE,
-and WYRM have each been finished once, and has nothing to do with the moths.
+and WYRM each have a real score, and has nothing to do with the moths.
+CIPHER, SEEK, and TWIN live in `/back.html`. The door in the 404 corridor
+opens on that room.
 
 ## The radio
 
@@ -54,7 +60,8 @@ the `.html` form, and both resolve.
 site/
   index.html          Arcade floor. Cabinet cards, unlock logic, time-of-day line.
   about.html          What the site keeps, and hints for the moths.
-  404.html            A dark corridor with one findable door. Playable.
+  404.html            A dark corridor with one findable door. Opens the back room.
+  back.html           Hidden room for CIPHER, SEEK, and TWIN.
   games/              One page per cabinet.
   assets/css/         Single stylesheet; both lighting states live here.
   assets/js/
@@ -62,6 +69,7 @@ site/
     radio.js          The corner radio, and in-site navigation that keeps it playing.
     pulse.js  lattice.js  echo.js  mothgame.js
     veil.js  splice.js  wyrm.js  static.js
+    cipher.js  seek.js  twin.js
   _headers            Noindex on `*.pages.dev` preview URLs.
 ```
 
@@ -72,7 +80,7 @@ Three things persist in `localStorage` and are read by every page:
 - `nocturne.lights` — whether the room is lit. The pull cord in the top-right
   corner toggles it, and the state survives navigation, so the whole site
   changes together.
-- `nocturne.moths` — which of the five moths have been caught. The count drives
+- `nocturne.moths` — which of the eight moths have been caught. The count drives
   the fourth cabinet.
 - `nocturne.best.<game>` — high scores. The arcade floor reads these back onto
   the cabinet cards.
@@ -91,8 +99,8 @@ room on every navigation.
 
 ## The moths
 
-Five, gated three different ways so that finding them teaches you what the site
-can do:
+Eight, gated several different ways so that finding them teaches you what the
+site can do:
 
 | Moth | Where | Gate |
 | --- | --- | --- |
@@ -101,8 +109,11 @@ can do:
 | `pulse` | PULSE, on the screen bezel | Lights out |
 | `lattice` | LATTICE, top-left of the board | Clear one board |
 | `echo` | ECHO, below the pads | Reach round 5 |
+| `about` | About page, in the footer | Lights out |
+| `back` | Back room, by the sign | Lights out |
+| `wyrm` | WYRM, on the screen bezel | Grow to length 10 |
 
-Catching all five rewrites the fourth cabinet in place and opens
+Catching all eight rewrites the fourth cabinet in place and opens
 `/games/moth.html`. That page is deliberately guessable: arriving early gets a
 "SEALED" panel that tells you what you are missing rather than a wall.
 

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Back room — NOCTURNE</title>
+<meta name="description" content="Cabinets that were never on the floor plan.">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/moth.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script>
+  try {
+    var s = JSON.parse(localStorage.getItem("nocturne.lights") || '"on"');
+    document.documentElement.setAttribute("data-lights", s === "out" ? "out" : "on");
+  } catch (e) {
+    document.documentElement.setAttribute("data-lights", "on");
+  }
+</script>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <a class="mark" href="/"><span class="dot"></span>NOCTURNE</a>
+    <nav class="nav">
+      <a href="/">Arcade</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </header>
+
+  <section class="hero" style="position:relative; padding: 3.5rem 0 1rem;">
+    <p class="eyebrow">Unlisted &middot; Off the floor plan</p>
+    <h1 class="sign" style="position:relative; display:inline-block; font-size: clamp(2rem, 7vw, 4.2rem);">BACK ROOM</h1>
+    <p class="muted" style="margin-top:1.4rem; font-size:1.05rem; max-width:52ch;">
+      These cabinets were never on the floor. The corridor door is how you
+      got here. The cord still works.
+    </p>
+    <button class="moth moth--hidden" data-moth="back" style="top: 1.4rem; left: 52%;"></button>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <p class="eyebrow">Still humming</p>
+    <h2>Three more machines.</h2>
+
+    <ul class="cabinets">
+      <li>
+        <a class="cab" href="/games/cipher.html" style="--accent: var(--amber);">
+          <span class="cab__kind">Puzzle</span>
+          <h3 class="cab__name">CIPHER</h3>
+          <p class="cab__desc">A crossword the house wrote about itself. Fill every white square.</p>
+          <p class="cab__best" data-best="cipher">Best &mdash; none yet</p>
+        </a>
+      </li>
+      <li>
+        <a class="cab" href="/games/seek.html" style="--accent: var(--green);">
+          <span class="cab__kind">Search</span>
+          <h3 class="cab__name">SEEK</h3>
+          <p class="cab__desc">A letter field. Every word in it is something this building already named.</p>
+          <p class="cab__best" data-best="seek">Best &mdash; none yet</p>
+        </a>
+      </li>
+      <li>
+        <a class="cab" href="/games/twin.html" style="--accent: var(--purple);">
+          <span class="cab__kind">Memory</span>
+          <h3 class="cab__name">TWIN</h3>
+          <p class="cab__desc">Flip two tiles. Match the pair. Remembering is the whole skill.</p>
+          <p class="cab__best" data-best="twin">Best &mdash; none yet</p>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+</div>
+
+<footer class="footer wrap">
+  <span><a href="/">&larr; back to the floor</a></span>
+  <span class="moth-count" data-moth-count>moths <b>0</b>/8</span>
+  <span>Unlisted</span>
+</footer>
+
+<script src="/assets/js/nocturne.js"></script>
+<script src="/assets/js/radio.js"></script>
+<script>
+(function () {
+  "use strict";
+  var labels = { cipher: "Cleared", seek: "Found", twin: "Best" };
+  Object.keys(labels).forEach(function (game) {
+    var node = document.querySelector('[data-best="' + game + '"]');
+    var best = window.Nocturne.bestScore(game);
+    if (node && best > 0) node.innerHTML = labels[game] + " &mdash; " + best;
+  });
+})();
+</script>
+
+</body>
+</html>

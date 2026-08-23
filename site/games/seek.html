@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEEK — NOCTURNE</title>
+<meta name="description" content="A letter field. Every word is something this building already named.">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/moth.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script>
+  try {
+    var s = JSON.parse(localStorage.getItem("nocturne.lights") || '"on"');
+    document.documentElement.setAttribute("data-lights", s === "out" ? "out" : "on");
+  } catch (e) {
+    document.documentElement.setAttribute("data-lights", "on");
+  }
+</script>
+<style>
+  .seek-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(11rem, 16rem);
+    gap: 1.2rem;
+    align-items: start;
+    width: 100%;
+  }
+  @media (max-width: 720px) {
+    .seek-wrap { grid-template-columns: 1fr; }
+  }
+  .seek {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(1.4rem, 1fr));
+    gap: 2px;
+    user-select: none;
+    touch-action: none;
+  }
+  .seek__cell {
+    aspect-ratio: 1;
+    border: 0;
+    border-radius: 4px;
+    background: var(--bg-raised);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: clamp(0.72rem, 2.4vw, 1rem);
+    cursor: pointer;
+    padding: 0;
+  }
+  .seek__cell[data-mark="on"] {
+    background: color-mix(in srgb, var(--green) 28%, var(--bg-raised));
+    color: var(--green);
+  }
+  .seek__cell[data-found="true"] {
+    background: color-mix(in srgb, var(--green) 18%, var(--bg-sunken));
+    color: var(--green);
+  }
+  .bank {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .bank li { margin: 0 0 0.4rem; }
+  .bank li[data-found="true"] {
+    color: var(--ink-faint);
+    text-decoration: line-through;
+  }
+</style>
+</head>
+<body style="--accent: var(--green);">
+
+<div class="wrap">
+
+  <header class="masthead">
+    <a class="mark" href="/"><span class="dot"></span>NOCTURNE</a>
+    <nav class="nav">
+      <a href="/">Arcade</a>
+      <a href="/back.html">Back room</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </header>
+
+  <section style="text-align:center; padding-top:1.5rem;">
+    <p class="eyebrow">Unlisted &middot; Search</p>
+    <h1 class="sign" style="font-size: clamp(2rem, 6vw, 3.4rem);">SEEK</h1>
+  </section>
+
+  <div class="stage">
+    <div class="screen screen--fit">
+      <div class="screen__overlay" id="overlay">
+        <h2 id="overlay-title">SEEK</h2>
+        <p id="overlay-body">
+          Drag across letters in a straight line. Every word is already in
+          the building. Diagonals count. Backwards counts.
+        </p>
+        <button class="btn" id="overlay-btn" type="button">Look</button>
+      </div>
+
+      <div class="seek-wrap" id="board" hidden>
+        <div class="seek" id="grid" role="grid" aria-label="Word search"></div>
+        <ul class="bank" id="bank"></ul>
+      </div>
+    </div>
+
+    <div class="hud">
+      <span>Found <b id="found">0</b></span>
+      <span>Words <b id="total">0</b></span>
+      <span>Best <b id="best">0</b></span>
+    </div>
+
+    <p class="keys"><kbd>drag</kbd> a straight line through a word</p>
+  </div>
+
+</div>
+
+<footer class="footer wrap">
+  <span><a href="/back.html">&larr; back room</a></span>
+  <span class="moth-count" data-moth-count>moths <b>0</b>/8</span>
+  <span>Unlisted</span>
+</footer>
+
+<script src="/assets/js/nocturne.js"></script>
+<script src="/assets/js/radio.js"></script>
+<script src="/assets/js/seek.js"></script>
+
+</body>
+</html>

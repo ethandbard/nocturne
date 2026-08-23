@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CIPHER — NOCTURNE</title>
+<meta name="description" content="A crossword the house wrote about itself.">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/moth.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script>
+  try {
+    var s = JSON.parse(localStorage.getItem("nocturne.lights") || '"on"');
+    document.documentElement.setAttribute("data-lights", s === "out" ? "out" : "on");
+  } catch (e) {
+    document.documentElement.setAttribute("data-lights", "on");
+  }
+</script>
+<style>
+  .xword-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem);
+    gap: 1.4rem;
+    align-items: start;
+    width: 100%;
+  }
+  @media (max-width: 720px) {
+    .xword-wrap { grid-template-columns: 1fr; }
+  }
+  .xword {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(1.7rem, 2.4rem));
+    gap: 3px;
+    justify-content: center;
+  }
+  .xword__cell {
+    position: relative;
+    aspect-ratio: 1;
+    border: 1px solid var(--edge);
+    border-radius: 4px;
+    background: var(--bg-raised);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    letter-spacing: 0;
+    cursor: pointer;
+    padding: 0;
+  }
+  .xword__cell[data-block="true"] {
+    background: #050409;
+    border-color: #050409;
+    pointer-events: none;
+  }
+  .xword__cell[data-on="true"] {
+    background: color-mix(in srgb, var(--amber) 22%, var(--bg-raised));
+    border-color: color-mix(in srgb, var(--amber) 55%, var(--edge));
+  }
+  .xword__cell[data-here="true"] {
+    outline: 2px solid var(--amber);
+    outline-offset: 0;
+  }
+  .xword__num {
+    position: absolute;
+    top: 2px;
+    left: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.52rem;
+    color: var(--ink-faint);
+    letter-spacing: 0;
+  }
+  .clues { margin: 0; padding: 0; list-style: none; }
+  .clues li {
+    margin: 0 0 0.65rem;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    cursor: pointer;
+    line-height: 1.4;
+  }
+  .clues li[data-on="true"] { color: var(--amber); }
+  .clues b {
+    font-family: var(--font-mono);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin-right: 0.4rem;
+  }
+</style>
+</head>
+<body style="--accent: var(--amber);">
+
+<div class="wrap">
+
+  <header class="masthead">
+    <a class="mark" href="/"><span class="dot"></span>NOCTURNE</a>
+    <nav class="nav">
+      <a href="/">Arcade</a>
+      <a href="/back.html">Back room</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </header>
+
+  <section style="text-align:center; padding-top:1.5rem;">
+    <p class="eyebrow">Unlisted &middot; Puzzle</p>
+    <h1 class="sign" style="font-size: clamp(2rem, 6vw, 3.4rem);">CIPHER</h1>
+  </section>
+
+  <div class="stage">
+    <div class="screen screen--fit">
+      <div class="screen__overlay" id="overlay">
+        <h2 id="overlay-title">CIPHER</h2>
+        <p id="overlay-body">
+          Click a square or a clue, then type. The answers are things this
+          building already named. Every white square has to fill.
+        </p>
+        <button class="btn" id="overlay-btn" type="button">Open the grid</button>
+      </div>
+
+      <div class="xword-wrap" id="board" hidden>
+        <div class="xword" id="grid" role="grid" aria-label="Crossword"></div>
+        <ol class="clues" id="clues"></ol>
+      </div>
+    </div>
+
+    <div class="hud">
+      <span>Filled <b id="filled">0</b></span>
+      <span>Squares <b id="total">0</b></span>
+      <span>Best <b id="best">0</b></span>
+    </div>
+
+    <p class="keys">
+      <kbd>letters</kbd> fill &nbsp;&middot;&nbsp; <kbd>backspace</kbd> erase
+      &nbsp;&middot;&nbsp; <kbd>arrows</kbd> move
+    </p>
+  </div>
+
+</div>
+
+<footer class="footer wrap">
+  <span><a href="/back.html">&larr; back room</a></span>
+  <span class="moth-count" data-moth-count>moths <b>0</b>/8</span>
+  <span>Unlisted</span>
+</footer>
+
+<script src="/assets/js/nocturne.js"></script>
+<script src="/assets/js/radio.js"></script>
+<script src="/assets/js/cipher.js"></script>
+
+</body>
+</html>

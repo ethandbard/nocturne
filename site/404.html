@@ -34,7 +34,8 @@
     <h1 class="sign" style="font-size: clamp(1.6rem, 5vw, 2.6rem);">BACK CORRIDOR</h1>
     <p class="muted" style="margin:1.2rem auto 0; max-width:46ch;">
       Whatever you were looking for is not here. It is very dark. Move your
-      cursor around until you find the door, then click it.
+      cursor around until you find the door, then click it. It does not go
+      back to the floor.
     </p>
   </section>
 
@@ -49,7 +50,7 @@
 
 <footer class="footer wrap">
   <span><a href="/">&larr; give up and go back</a></span>
-  <span class="moth-count" data-moth-count>moths <b>0</b>/5</span>
+  <span class="moth-count" data-moth-count>moths <b>0</b>/8</span>
   <span>404</span>
 </footer>
 
@@ -60,7 +61,8 @@
   "use strict";
 
   /* A 404 that is worth landing on: the page is pitch dark, the cursor is a
-     torch, and there is exactly one door. Finding it is the whole thing. */
+     torch, and there is exactly one door. It opens on the back room, not the
+     floor. */
   var W = 640, H = 360;
   var canvas = document.getElementById("corridor");
   var ctx = canvas.getContext("2d");
@@ -98,7 +100,7 @@
     }
     found = true;
     hint.textContent = "Found it.";
-    window.setTimeout(function () { window.location.href = "/"; }, 700);
+    window.setTimeout(function () { window.location.href = "/back.html"; }, 700);
   });
 
   function draw() {

@@ -80,7 +80,7 @@
         </a>
       </li>
       <li>
-        <!-- Dead until all five moths are caught, at which point nocturne.js
+        <!-- Dead until every moth is caught, at which point nocturne.js
              swaps the copy and turns it into a real link. -->
         <a class="cab cab--dark" id="cab-moth" href="#" style="--accent: var(--amber);">
           <span class="cab__kind">Out of order</span>
@@ -114,7 +114,7 @@
         </a>
       </li>
       <li>
-        <!-- Dead until VEIL, SPLICE, and WYRM have each been finished once. -->
+        <!-- Dead until VEIL, SPLICE, and WYRM each have a real score. -->
         <a class="cab cab--dark" id="cab-static" href="#" style="--accent: color-mix(in srgb, var(--blue) 30%, var(--ink-soft));">
           <span class="cab__kind">Unlisted</span>
           <h3 class="cab__name">&mdash;&mdash;&mdash;&mdash;</h3>
@@ -150,7 +150,7 @@
   <span>NOCTURNE &mdash; open all night</span>
   <!-- Second moth. Only rendered once the lights are out. -->
   <button class="moth moth--hidden" data-moth="cellar" style="bottom: 2.2rem; left: 42%;"></button>
-  <span class="moth-count" data-moth-count>moths <b>0</b>/5</span>
+  <span class="moth-count" data-moth-count>moths <b>0</b>/8</span>
   <span><a href="/about.html">About</a></span>
 </footer>
 
@@ -173,7 +173,7 @@
 
   /* Pull each cabinet's stored best onto its card, so the landing page
      reflects what you did inside the games. */
-  var labels = { pulse: "Best", lattice: "Cleared", echo: "Round", veil: "Best", splice: "Cleared", wyrm: "Best" };
+  var labels = { pulse: "Best", lattice: "Cleared", echo: "Round", veil: "Best", splice: "Cleared", wyrm: "Best", static: "Locked" };
   Object.keys(labels).forEach(function (game) {
     var node = document.querySelector('[data-best="' + game + '"]');
     var best = window.Nocturne.bestScore(game);
@@ -187,7 +187,7 @@
     "Still nothing. The hum gets slightly louder.",
     "You can hear wings against the inside of the glass.",
     "Something in there is counting. It is not done.",
-    "Five, it wants. It will not say five what.",
+    "Eight, it wants. It will not say eight what.",
     "Try the cord. Then look where the light was."
   ];
   var pokes = 0;
@@ -221,23 +221,17 @@
   /* Catching the last moth opens the cabinet without a reload. */
   window.addEventListener("nocturne:unlocked", function () { openCabinet(true); });
 
-  /* The second dark cabinet: gated on finishing VEIL, SPLICE, and WYRM once
-     each, not on moths. Checked only on load — there is no way to clear one
-     of those three from this page, so there is nothing to listen for. */
+  /* The second dark cabinet: gated on VEIL, SPLICE, and WYRM scores, not on
+     moths. Checked only on load — there is no way to raise those scores from
+     this page, so there is nothing to listen for. */
   var STATIC_SNARK = [
     "Nothing but hiss.",
     "The hiss has a shape to it, if you listen.",
     "Three machines are still running somewhere behind this wall.",
-    "It is waiting on all three, not some of them."
+    "A glance is not enough. They have to be played until they count."
   ];
   var staticPokes = 0;
   var cabStatic = document.getElementById("cab-static");
-
-  function staticReady() {
-    return window.Nocturne.bestScore("veil") > 0 &&
-           window.Nocturne.bestScore("splice") > 0 &&
-           window.Nocturne.bestScore("wyrm") > 0;
-  }
 
   function openStaticCabinet() {
     cabStatic.classList.remove("cab--dark");
@@ -246,11 +240,13 @@
     cabStatic.querySelector(".cab__kind").textContent = "Signal";
     cabStatic.querySelector(".cab__name").textContent = "STATIC";
     cabStatic.querySelector(".cab__desc").textContent =
-      "Three machines, run once each, and the noise clears just enough to mean something.";
-    cabStatic.querySelector(".cab__best").innerHTML = "Best &mdash; unrated";
+      "Lock the drifting station before the signal dies. Each lock makes the next one meaner.";
+    var best = window.Nocturne.bestScore("static");
+    cabStatic.querySelector(".cab__best").innerHTML =
+      best > 0 ? "Locked &mdash; " + best : "Best &mdash; none yet";
   }
 
-  if (staticReady()) {
+  if (window.Nocturne.staticReady()) {
     openStaticCabinet();
   } else {
     cabStatic.addEventListener("click", function (event) {

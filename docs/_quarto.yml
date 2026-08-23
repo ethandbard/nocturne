@@ -8,7 +8,7 @@ project:
 
 website:
   title: "NOCTURNE"
-  description: "A browser arcade that behaves like a place: three games, a light cord, and five hidden moths that unlock a fourth."
+  description: "A browser arcade that behaves like a place: cabinets on the floor, a light cord, and eight hidden moths that unlock a fourth."
   site-url: https://ethandbard.github.io/nocturne/
   repo-url: https://github.com/ethandbard/nocturne
   repo-subdir: docs

@@ -10,10 +10,11 @@ Static site &middot; No framework &middot; Cloudflare Pages
 # A browser arcade that behaves like a place
 
 ::: {.lede}
-Six games sit on the floor and two stay sealed. A pull cord in the corner
-turns the lights off, a radio in the other corner plays something low, and
-some things only exist in the dark. What you do in one room shows up in
-another, because the arcade keeps notes.
+Six games sit on the floor and two stay sealed. A back room sits behind a
+bad address. A pull cord in the corner turns the lights off, a radio in
+the other corner plays something low, and some things only exist in the
+dark. What you do in one room shows up in another, because the arcade
+keeps notes.
 :::
 :::
 
@@ -57,8 +58,9 @@ wrong answer still sounds like music instead of a buzzer.
 
 ### VEIL
 
-Sweeping searchlights read motion, not position. Sprint through one and your
-exposure spikes; hold still inside the same beam and it barely notices you.
+Sweeping searchlights read motion, not position. Fans mount on the walls and
+bars slide the whole floor, so one side of the room is never safe. Sprint
+through a beam and exposure spikes; hold still and it still climbs, slower.
 :::
 
 ::: {}
@@ -94,14 +96,44 @@ radius, so running low on light means you cannot see the next beam coming.
 
 ### STATIC
 
-A tuning-dial vignette, not a full game. Unlocks once VEIL, SPLICE, and WYRM
-have each been finished once — no relation to the moths.
+Hold a drifting station until it locks. Each lock makes the next band
+thinner and faster. Leave the band too long and the signal dies. Unlocks
+once VEIL, SPLICE, and WYRM each have a real score — no relation to the
+moths.
+:::
+
+::: {}
+[Unlisted · Puzzle]{.num}
+
+### CIPHER
+
+A crossword whose answers are already in the building. Lives in the back
+room, which the 404 door opens onto.
+:::
+
+::: {}
+[Unlisted · Search]{.num}
+
+### SEEK
+
+A letter field of words the arcade already named. Drag a straight line in
+any of eight directions.
+:::
+
+::: {}
+[Unlisted · Memory]{.num}
+
+### TWIN
+
+Sixteen tiles, eight pairs. A miss turns back over. Fewer turns score higher.
 :::
 :::
 
-MOTH is not reachable on a first visit. It opens once all five hidden moths
+MOTH is not reachable on a first visit. It opens once all eight hidden moths
 have been found. STATIC is a second, unrelated secret: it opens once VEIL,
-SPLICE, and WYRM have each been finished once.
+SPLICE, and WYRM each have a real score. CIPHER, SEEK, and TWIN are a third
+secret: they live at `/back.html`, and the 404 corridor door is how you get
+there.
 
 ## The radio
 
@@ -147,8 +179,8 @@ flowchart LR
 that differs between lit and dark reads from those properties rather than
 hard-coding a colour, so the entire site changes with a single attribute.
 
-That design is what lets the cord do more than theming. Two of the five moths
-are rendered only in the dark, which makes the cord a search tool.
+That design is what lets the cord do more than theming. Several of the eight
+moths are rendered only in the dark, which makes the cord a search tool.
 
 ::: {.callout-note}
 ## The flash-of-lit-room problem
@@ -161,7 +193,7 @@ single navigation. It is three lines, and skipping them undoes the effect.
 
 ## The moths
 
-Five, gated three different ways. The gating is the tutorial: finding them
+Eight, gated several different ways. The gating is the tutorial: finding them
 teaches you what the site can do.
 
 | Moth | Where | How it is gated |
@@ -171,13 +203,16 @@ teaches you what the site can do.
 | `pulse` | PULSE, on the screen bezel | Lights out only |
 | `lattice` | LATTICE, corner of the board | Clear one board |
 | `echo` | ECHO, below the pads | Reach round 5 |
+| `about` | About page, in the footer | Lights out only |
+| `back` | Back room, by the sign | Lights out only |
+| `wyrm` | WYRM, on the screen bezel | Grow to length 10 |
 
 Two CSS classes keep those gates apart. `.moth--hidden` is revealed by
 darkness; `.moth--locked` stays invisible whatever the lights are doing, until a
 game calls `revealMoth()`. Using one class for both would have let a player
 collect the earned moths just by pulling the cord.
 
-Catching the fifth rewrites the fourth cabinet in place — no reload — and opens
+Catching the eighth rewrites the fourth cabinet in place — no reload — and opens
 `/games/moth.html`.
 
 ### Arriving early
@@ -190,7 +225,7 @@ with information is the point.
 ## Other things worth clicking
 
 - **The 404.** Any bad URL lands you in a dark back corridor. Your cursor is a
-  torch, there is exactly one door, and finding it takes you home.
+  torch, there is exactly one door, and finding it opens the back room.
 - **The Konami code.** Works anywhere. Does nothing useful.
 - **The greeting.** The line under the sign reads your clock, so it is not the
   same text at 3am as it is at noon.
@@ -204,7 +239,8 @@ handful of small JavaScript files on Cloudflare Pages.
 site/
   index.html          Arcade floor
   about.html          What it keeps, plus hints
-  404.html            The back corridor
+  404.html            The back corridor; the door opens `/back.html`
+  back.html           Hidden room for CIPHER, SEEK, and TWIN
   games/              One page per cabinet
   assets/css/site.css Both lighting states
   assets/js/
@@ -212,6 +248,7 @@ site/
     radio.js          The corner radio, and in-site navigation that keeps it playing
     pulse.js  lattice.js  echo.js  mothgame.js
     veil.js  splice.js  wyrm.js  static.js
+    cipher.js  seek.js  twin.js
 ```
 
 Each game owns a fixed logical coordinate space — 800&times;600 for PULSE and

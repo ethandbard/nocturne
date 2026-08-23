@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TWIN — NOCTURNE</title>
+<meta name="description" content="Flip two tiles. Match the pair.">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/moth.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script>
+  try {
+    var s = JSON.parse(localStorage.getItem("nocturne.lights") || '"on"');
+    document.documentElement.setAttribute("data-lights", s === "out" ? "out" : "on");
+  } catch (e) {
+    document.documentElement.setAttribute("data-lights", "on");
+  }
+</script>
+<style>
+  .twin {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    width: min(100%, 420px);
+    margin: 0.2rem auto;
+  }
+  .twin__tile {
+    aspect-ratio: 1;
+    border: 1px solid var(--edge);
+    border-radius: 10px;
+    background: linear-gradient(180deg, var(--bg-raised), var(--bg-sunken));
+    color: var(--ink-faint);
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .twin__tile::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(135deg, transparent 0 6px, rgba(36,31,54,0.5) 6px 7px);
+    opacity: 0.7;
+  }
+  .twin__face {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transform: scale(0.86);
+    transition: opacity 160ms ease, transform 160ms ease;
+  }
+  .twin__tile[data-face="up"]::before,
+  .twin__tile[data-matched="true"]::before { opacity: 0; }
+  .twin__tile[data-face="up"] .twin__face,
+  .twin__tile[data-matched="true"] .twin__face {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .twin__tile[data-matched="true"] {
+    border-color: color-mix(in srgb, var(--accent, var(--purple)) 50%, var(--edge));
+    box-shadow: 0 0 calc(18px * var(--glow-strength)) color-mix(in srgb, var(--accent, var(--purple)) 30%, transparent);
+  }
+  .twin__tile:focus-visible {
+    outline: 2px solid var(--purple);
+    outline-offset: 2px;
+  }
+  .glyph { width: 42%; height: 42%; }
+  @media (prefers-reduced-motion: reduce) {
+    .twin__face { transition: none; }
+  }
+</style>
+</head>
+<body style="--accent: var(--purple);">
+
+<div class="wrap">
+
+  <header class="masthead">
+    <a class="mark" href="/"><span class="dot"></span>NOCTURNE</a>
+    <nav class="nav">
+      <a href="/">Arcade</a>
+      <a href="/back.html">Back room</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </header>
+
+  <section style="text-align:center; padding-top:1.5rem;">
+    <p class="eyebrow">Unlisted &middot; Memory</p>
+    <h1 class="sign" style="font-size: clamp(2rem, 6vw, 3.4rem);">TWIN</h1>
+  </section>
+
+  <div class="stage">
+    <div class="screen screen--fit" style="display:flex; justify-content:center;">
+      <div class="screen__overlay" id="overlay">
+        <h2 id="overlay-title">TWIN</h2>
+        <p id="overlay-body">
+          Flip two tiles. A match stays up. A miss turns back over. Fewer
+          turns is better.
+        </p>
+        <button class="btn" id="overlay-btn" type="button">Deal</button>
+      </div>
+
+      <div class="twin" id="grid" hidden role="grid" aria-label="Matching tiles"></div>
+    </div>
+
+    <div class="hud">
+      <span>Pairs <b id="pairs">0</b></span>
+      <span>Turns <b id="turns">0</b></span>
+      <span>Best <b id="best">0</b></span>
+    </div>
+
+    <p class="keys"><kbd>click</kbd> a tile to turn it</p>
+  </div>
+
+</div>
+
+<footer class="footer wrap">
+  <span><a href="/back.html">&larr; back room</a></span>
+  <span class="moth-count" data-moth-count>moths <b>0</b>/8</span>
+  <span>Unlisted</span>
+</footer>
+
+<script src="/assets/js/nocturne.js"></script>
+<script src="/assets/js/radio.js"></script>
+<script src="/assets/js/twin.js"></script>
+
+</body>
+</html>

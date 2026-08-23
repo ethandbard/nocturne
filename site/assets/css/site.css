@@ -662,6 +662,18 @@ html[data-lights="out"] .moth--locked { opacity: 0; pointer-events: none; }
 }
 .screen canvas { display: block; width: 100%; height: 100%; }
 
+/* Word cabinets are DOM boards, not a fixed canvas ratio. Min-height
+   keeps the start overlay from collapsing: the overlay is absolutely
+   positioned, so it does not give the screen any height of its own. */
+.screen--fit {
+  aspect-ratio: auto;
+  height: auto;
+  min-height: 28rem;
+  max-width: 760px;
+  touch-action: auto;
+  padding: 1rem;
+}
+
 /* Overlay used for every start / pause / game-over state. */
 .screen__overlay {
   position: absolute;

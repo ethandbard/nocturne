@@ -4,6 +4,9 @@
  * it does not, so a single graze is recoverable — staying reckless is what
  * kills you.
  *
+ * Beams are wall-mounted fans and sliding bars, not interior pivots. Interior
+ * origins clustered on one side of the floor and left the other side safe.
+ *
  * Same fixed 800x600 space and DPR-scaled canvas as PULSE and MOTH; nothing
  * in the simulation thinks in screen pixels.
  */
@@ -14,7 +17,8 @@
   var W = 800;
   var H = 600;
   var EXPOSURE_MAX = 100;
-  var MOTES_TARGET = 5;
+  var MAX_FANS = 3;
+  var MAX_BARS = 2;
 
   var canvas = document.getElementById("game");
   var ctx = canvas.getContext("2d");
@@ -51,6 +55,8 @@
   var sparks = [];
 
   var keys = Object.create(null);
+  var sinceBeam = 0;
+  var sinceMote = 0;
 
   /* -------------------------------------------------------------- input --- */
 
@@ -74,27 +80,92 @@
   /* ------------------------------------------------------------ spawning --- */
 
   function difficulty() {
-    return 1 + elapsed / 34;
+    return 1 + elapsed / 28;
+  }
+
+  function placeFanOnWall(b) {
+    var t = b.along;
+    if (b.wall === 0) {
+      b.x = 0;
+      b.y = 36 + t * (H - 72);
+      b.baseAngle = 0;
+    } else if (b.wall === 1) {
+      b.x = W;
+      b.y = 36 + t * (H - 72);
+      b.baseAngle = Math.PI;
+    } else if (b.wall === 2) {
+      b.x = 36 + t * (W - 72);
+      b.y = 0;
+      b.baseAngle = Math.PI / 2;
+    } else {
+      b.x = 36 + t * (W - 72);
+      b.y = H;
+      b.baseAngle = -Math.PI / 2;
+    }
+  }
+
+  function addFan() {
+    var b = {
+      kind: "fan",
+      wall: Math.floor(Math.random() * 4),
+      along: Math.random(),
+      alongVel: (Math.random() < 0.5 ? -1 : 1) * (0.12 + Math.random() * 0.1),
+      sweep: 0.7 + Math.random() * 0.35,
+      sweepT: Math.random() * Math.PI * 2,
+      sweepVel: 0.85 + Math.random() * 0.55,
+      half: 0.2 + Math.random() * 0.07,
+      reach: 460 + Math.random() * 160,
+      x: 0,
+      y: 0,
+      angle: 0,
+      baseAngle: 0
+    };
+    placeFanOnWall(b);
+    b.angle = b.baseAngle;
+    beams.push(b);
+  }
+
+  function addBar() {
+    var horiz = Math.random() < 0.5;
+    var span = horiz ? H : W;
+    beams.push({
+      kind: "bar",
+      horiz: horiz,
+      pos: 40 + Math.random() * (span - 80),
+      vel: (Math.random() < 0.5 ? -1 : 1) * (90 + Math.random() * 70),
+      thick: 34 + Math.random() * 14
+    });
+  }
+
+  function countKind(kind) {
+    var n = 0;
+    for (var i = 0; i < beams.length; i++) {
+      if (beams[i].kind === kind) n++;
+    }
+    return n;
   }
 
   function addBeam() {
-    var margin = 90;
-    beams.push({
-      x: margin + Math.random() * (W - margin * 2),
-      y: margin + Math.random() * (H - margin * 2),
-      angle: Math.random() * Math.PI * 2,
-      spin: (Math.random() < 0.5 ? -1 : 1) * (0.5 + Math.random() * 0.4),
-      half: 0.28 + Math.random() * 0.08,
-      reach: 230 + Math.random() * 80
-    });
+    var fans = countKind("fan");
+    var bars = countKind("bar");
+    if (bars < MAX_BARS && (bars === 0 || (fans >= bars && Math.random() < 0.55))) {
+      addBar();
+      return;
+    }
+    if (fans < MAX_FANS) addFan();
+    else if (bars < MAX_BARS) addBar();
   }
 
   function addMote() {
-    motes.push({
-      x: 50 + Math.random() * (W - 100),
-      y: 50 + Math.random() * (H - 100),
-      bob: Math.random() * Math.PI * 2
-    });
+    var x;
+    var y;
+    var tries = 0;
+    do {
+      x = 50 + Math.random() * (W - 100);
+      y = 50 + Math.random() * (H - 100);
+      tries++;
+    } while (tries < 8 && Math.hypot(x - player.x, y - player.y) < 90);
+    motes.push({ x: x, y: y, bob: Math.random() * Math.PI * 2 });
   }
 
   function burst(x, y, color, n) {
@@ -105,6 +176,20 @@
     }
   }
 
+  function beamHits(b) {
+    if (b.kind === "bar") {
+      if (b.horiz) return Math.abs(player.y - b.pos) < b.thick / 2 + player.r;
+      return Math.abs(player.x - b.pos) < b.thick / 2 + player.r;
+    }
+    var dx = player.x - b.x;
+    var dy = player.y - b.y;
+    var dist = Math.hypot(dx, dy);
+    if (dist > b.reach) return false;
+    var toPlayer = Math.atan2(dy, dx);
+    var diff = Math.atan2(Math.sin(toPlayer - b.angle), Math.cos(toPlayer - b.angle));
+    return Math.abs(diff) < b.half;
+  }
+
   /* ------------------------------------------------------------ lifecycle --- */
 
   function reset() {
@@ -112,14 +197,16 @@
     score = 0;
     exposure = 0;
     motesTaken = 0;
+    sinceBeam = 0;
+    sinceMote = 0;
     beams.length = 0;
     motes.length = 0;
     sparks.length = 0;
     player.x = player.tx = player.px = W / 2;
     player.y = player.ty = player.py = H / 2;
     player.speed = 0;
-    addBeam();
-    addBeam();
+    addFan();
+    addBar();
     for (var i = 0; i < 3; i++) addMote();
   }
 
@@ -158,9 +245,6 @@
 
   /* --------------------------------------------------------------- step --- */
 
-  var sinceBeam = 0;
-  var sinceMote = 0;
-
   function update(dt) {
     elapsed += dt;
     score += dt * 5;
@@ -185,12 +269,12 @@
 
     var d = difficulty();
     sinceBeam += dt;
-    if (sinceBeam > 16 / d && beams.length < 5) {
+    if (sinceBeam > 9 / d && beams.length < MAX_FANS + MAX_BARS) {
       sinceBeam = 0;
       addBeam();
     }
     sinceMote += dt;
-    if (sinceMote > 2.2 && motes.length < 4) {
+    if (sinceMote > 2.4 && motes.length < 4) {
       sinceMote = 0;
       addMote();
     }
@@ -199,24 +283,34 @@
     var i;
     for (i = 0; i < beams.length; i++) {
       var b = beams[i];
-      b.angle += b.spin * d * dt;
-      var dx = player.x - b.x;
-      var dy = player.y - b.y;
-      var dist = Math.hypot(dx, dy);
-      if (dist > b.reach) continue;
-      var toPlayer = Math.atan2(dy, dx);
-      var diff = Math.atan2(Math.sin(toPlayer - b.angle), Math.cos(toPlayer - b.angle));
-      if (Math.abs(diff) < b.half) lit = true;
+      if (b.kind === "fan") {
+        b.along += b.alongVel * dt;
+        if (b.along < 0 || b.along > 1) {
+          b.alongVel *= -1;
+          b.along = Math.max(0, Math.min(1, b.along));
+        }
+        placeFanOnWall(b);
+        b.sweepT += b.sweepVel * d * dt;
+        b.angle = b.baseAngle + Math.sin(b.sweepT) * b.sweep;
+      } else {
+        b.pos += b.vel * d * dt;
+        var span = b.horiz ? H : W;
+        if (b.pos < 8 || b.pos > span - 8) {
+          b.vel *= -1;
+          b.pos = Math.max(8, Math.min(span - 8, b.pos));
+        }
+      }
+      if (beamHits(b)) lit = true;
     }
 
-    /* Visibility scales with how fast you are moving, not just whether you
-       are lit — standing still inside a beam still leaks exposure, but far
-       slower than sprinting through one. */
+    /* Standing still inside a beam still leaks exposure; sprinting through
+       one fills the meter in about a second. Camping the far wall used to
+       work because beams never left their spawn corner. */
     var normSpeed = Math.min(1, player.speed / 260);
-    var visibility = 0.22 + 0.78 * normSpeed;
+    var visibility = 0.42 + 0.58 * normSpeed;
 
-    if (lit) exposure = Math.min(EXPOSURE_MAX, exposure + dt * 62 * visibility);
-    else exposure = Math.max(0, exposure - dt * 34);
+    if (lit) exposure = Math.min(EXPOSURE_MAX, exposure + dt * 78 * visibility);
+    else exposure = Math.max(0, exposure - dt * 16);
 
     if (exposure >= EXPOSURE_MAX) { die(); return; }
 
@@ -229,7 +323,7 @@
         motes.splice(i, 1);
         motesTaken++;
         score += 40;
-        exposure = Math.max(0, exposure - 12);
+        exposure = Math.max(0, exposure - 7);
         burst(m.x, m.y, "74,222,128", 8);
       }
     }
@@ -249,6 +343,32 @@
 
   /* --------------------------------------------------------------- draw --- */
 
+  function drawFan(b) {
+    var grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.reach);
+    grad.addColorStop(0, "rgba(56,189,248,0.32)");
+    grad.addColorStop(1, "rgba(56,189,248,0)");
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(b.x, b.y);
+    ctx.arc(b.x, b.y, b.reach, b.angle - b.half, b.angle + b.half);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawBar(b) {
+    if (b.horiz) {
+      ctx.fillStyle = "rgba(56,189,248,0.16)";
+      ctx.fillRect(0, b.pos - b.thick / 2, W, b.thick);
+      ctx.fillStyle = "rgba(186,230,253,0.55)";
+      ctx.fillRect(0, b.pos - 2, W, 4);
+    } else {
+      ctx.fillStyle = "rgba(56,189,248,0.16)";
+      ctx.fillRect(b.pos - b.thick / 2, 0, b.thick, H);
+      ctx.fillStyle = "rgba(186,230,253,0.55)";
+      ctx.fillRect(b.pos - 2, 0, 4, H);
+    }
+  }
+
   function draw() {
     ctx.fillStyle = "#040309";
     ctx.fillRect(0, 0, W, H);
@@ -258,16 +378,8 @@
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
     for (i = 0; i < beams.length; i++) {
-      var b = beams[i];
-      var grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.reach);
-      grad.addColorStop(0, "rgba(56,189,248,0.28)");
-      grad.addColorStop(1, "rgba(56,189,248,0)");
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.moveTo(b.x, b.y);
-      ctx.arc(b.x, b.y, b.reach, b.angle - b.half, b.angle + b.half);
-      ctx.closePath();
-      ctx.fill();
+      if (beams[i].kind === "fan") drawFan(beams[i]);
+      else drawBar(beams[i]);
     }
     ctx.restore();
 

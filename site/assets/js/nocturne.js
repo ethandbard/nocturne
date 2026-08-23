@@ -15,10 +15,14 @@
   var KEY_SCORE = "nocturne.best.";
   var KEY_VISITS = "nocturne.visits";
 
-  /* The five moths, in the order the footer counter shows them. Keeping the
-     canonical list here means a page can host a moth without knowing how many
-     others exist. */
-  var MOTHS = ["sign", "cellar", "pulse", "lattice", "echo"];
+  /* Canonical moth ids, in the order the footer counter shows them. A page
+     can host a moth without knowing how many others exist. */
+  var MOTHS = ["sign", "cellar", "pulse", "lattice", "echo", "about", "back", "wyrm"];
+
+  /* STATIC stays independent of the moths. A death on the overlay of VEIL,
+     SPLICE, or WYRM used to count as "finished"; these floors are what
+     "played for real" means. */
+  var STATIC_NEED = { veil: 80, splice: 3, wyrm: 10 };
 
   /* ------------------------------------------------------------- store --- */
 
@@ -163,7 +167,7 @@
           var n = caught().length;
 
           if (n >= MOTHS.length) {
-            toast("all five. the back cabinet just woke up.", "#a855f7", 4200);
+            toast("that is all of them. the back cabinet just woke up.", "#a855f7", 4200);
             window.setTimeout(function () {
               window.dispatchEvent(new CustomEvent("nocturne:unlocked"));
             }, 300);
@@ -258,6 +262,13 @@
       return true;
     },
     bestScore: function (game) { return read(KEY_SCORE + game, 0) || 0; },
+
+    staticNeed: STATIC_NEED,
+    staticReady: function () {
+      return (read(KEY_SCORE + "veil", 0) || 0) >= STATIC_NEED.veil &&
+             (read(KEY_SCORE + "splice", 0) || 0) >= STATIC_NEED.splice &&
+             (read(KEY_SCORE + "wyrm", 0) || 0) >= STATIC_NEED.wyrm;
+    },
 
     /* Reveals a moth that a game has decided you have earned. */
     revealMoth: function (id) {

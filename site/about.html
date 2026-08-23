@@ -36,10 +36,10 @@
 
     <p>
       NOCTURNE is a small arcade that runs entirely in your browser. Six games
-      are on the floor and two are not, and everything about it &mdash; the
-      lighting, the scores, the things that move when you are not looking
-      &mdash; is a few hundred lines of plain JavaScript with no framework
-      underneath it and no server keeping notes.
+      are on the floor and two are not, and the corridor behind a bad address
+      holds a few more. Everything about it &mdash; the lighting, the scores,
+      the things that move when you are not looking &mdash; is plain JavaScript
+      with no framework underneath it and no server keeping notes.
     </p>
 
     <p>
@@ -61,14 +61,15 @@
 
     <h2 style="margin-top:2.5rem;">If you are stuck</h2>
     <p class="muted">
-      Five moths are hidden across these pages, and the fourth cabinet stays
+      Eight moths are hidden across these pages, and the fourth cabinet stays
       dark until every one of them is found. In rough order of how obvious they
       are:
     </p>
     <ul class="muted" style="max-width: var(--measure); padding-left:1.2rem;">
       <li style="margin-bottom:0.5rem;">One is in plain sight already, low-contrast against the furniture. It is resting on the sign.</li>
-      <li style="margin-bottom:0.5rem;">Two only exist when the room is dark. There is a cord in the top right corner of every page; one of these is downstairs on the front page, the other is on a cabinet.</li>
-      <li style="margin-bottom:0.5rem;">Two will not turn up until a cabinet has been played properly rather than glanced at. Finishing something is the trigger, not starting it.</li>
+      <li style="margin-bottom:0.5rem;">Several only exist when the room is dark. There is a cord in the top right corner of every page. The cellar is downstairs on the front page. This room has one too, if you look after you pull it.</li>
+      <li style="margin-bottom:0.5rem;">Two will not turn up until a cabinet has been played properly rather than glanced at. Finishing something is the trigger, not starting it. The snake is one of those.</li>
+      <li style="margin-bottom:0.5rem;">A bad address is still a room. The door in that corridor does not lead back to the floor.</li>
     </ul>
     <p class="muted" style="font-size:0.88rem;">
       There is also an old cheat code that does nothing useful. It is worth
@@ -84,10 +85,11 @@
 
     <h2 style="margin-top:2.5rem;">A second unlisted cabinet</h2>
     <p class="muted">
-      VEIL, SPLICE, and WYRM hide nothing themselves &mdash; no moths, no
-      gated content. But finish each of them once, in any order, and a
-      cabinet that is not on the floor plan starts picking up a signal. It has
-      nothing to do with the moths at all.
+      VEIL, SPLICE, and WYRM are still the key to the hissing cabinet, and it
+      still has nothing to do with the moths. A death on the overlay does not
+      count. Each of those three has to be played until the score is real.
+      STATIC itself is a tuner that fights back: lock drifting stations before
+      the signal dies.
     </p>
 
     <hr class="rule">
@@ -103,8 +105,9 @@
 
 <footer class="footer wrap">
   <span><a href="/">&larr; back to the floor</a></span>
-  <span class="moth-count" data-moth-count>moths <b>0</b>/5</span>
+  <span class="moth-count" data-moth-count>moths <b>0</b>/8</span>
   <span>NOCTURNE</span>
+  <button class="moth moth--hidden" data-moth="about" style="bottom: 2.2rem; right: 18%;"></button>
 </footer>
 
 <script src="/assets/js/nocturne.js"></script>

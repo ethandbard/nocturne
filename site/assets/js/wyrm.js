@@ -159,6 +159,7 @@
       step = Math.max(STEP_MIN, step - STEP_SHRINK);
       placeMote();
       window.Nocturne.toast(body.length + " segments", "#4ade80", 1000);
+      if (body.length >= 10) window.Nocturne.revealMoth("wyrm");
     } else {
       body.pop();
     }

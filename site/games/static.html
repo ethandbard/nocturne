@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>STATIC — NOCTURNE</title>
-<meta name="description" content="Something underneath the noise, once the new machines have all been run once.">
+<meta name="description" content="Lock drifting stations before the signal dies. Buried until VEIL, SPLICE, and WYRM have each been played for real.">
 <meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex">
 <link rel="icon" href="/assets/moth.svg" type="image/svg+xml">
@@ -38,10 +38,11 @@
     <p class="eyebrow">Cabinet 08 &middot; Unlisted</p>
     <h1 class="sign" style="font-size: clamp(1.8rem, 5vw, 3rem);">NOTHING BUT NOISE</h1>
     <p class="muted" style="margin-top:1.5rem;">
-      There is a signal here, but it is buried. It only comes through once
-      VEIL, SPLICE, and WYRM have each been run to the end at least once &mdash;
-      cleared or not does not matter, only finished.
+      There is a signal here, but it is buried. VEIL, SPLICE, and WYRM each
+      have to be played long enough to leave a mark &mdash; a glance and a
+      death on the overlay is not enough.
     </p>
+    <ul class="muted" id="need-list" style="max-width: var(--measure); padding-left:1.2rem;"></ul>
     <p style="margin-top:1.8rem;"><a class="btn" href="/">Back to the floor</a></p>
   </section>
 
@@ -54,15 +55,32 @@
     <div class="stage">
       <div class="screen" style="aspect-ratio: 13 / 8.5; max-width: 560px; cursor:pointer;">
         <canvas id="dial" aria-label="A tuning dial" role="img"></canvas>
+
+        <div class="screen__overlay" id="overlay">
+          <h2 id="overlay-title">STATIC</h2>
+          <p id="overlay-body">
+            Drag the needle onto the gold band and hold it while the station
+            drifts. Each lock makes the next one faster and thinner. Leave the
+            band too long and the signal dies.
+          </p>
+          <button class="btn" id="overlay-btn" type="button">Tune</button>
+        </div>
       </div>
+
+      <div class="hud">
+        <span>Locked <b id="station">0</b></span>
+        <span>Signal <b id="signal">100%</b></span>
+        <span>Best <b id="best">0</b></span>
+      </div>
+
       <p class="keys" id="dial-hint">drag the needle, or use the arrow keys</p>
 
       <div class="panel" id="reveal" hidden style="max-width: 46ch; text-align:center;">
         <p class="eyebrow">Logged, whenever this was</p>
         <p class="muted" style="margin:0;">
-          Three machines, run once each, and the noise clears just enough to
-          say: nobody built the rest of this place either. It was always just
-          you, finding what was already here.
+          Three machines, played until they counted, and the noise clears just
+          enough to say: the corridor at a bad address does not go home. It
+          goes further in.
         </p>
       </div>
     </div>
@@ -72,7 +90,7 @@
 
 <footer class="footer wrap">
   <span><a href="/">&larr; back to the floor</a></span>
-  <span class="moth-count" data-moth-count>moths <b>0</b>/5</span>
+  <span class="moth-count" data-moth-count>moths <b>0</b>/8</span>
   <span>Cabinet 08</span>
 </footer>
 
@@ -81,16 +99,30 @@
 <script>
 (function () {
   "use strict";
-  var open = window.Nocturne.bestScore("veil") > 0 &&
-             window.Nocturne.bestScore("splice") > 0 &&
-             window.Nocturne.bestScore("wyrm") > 0;
+  var open = window.Nocturne.staticReady();
   document.getElementById(open ? "unlocked" : "locked").hidden = false;
 
   if (open) {
     var s = document.createElement("script");
     s.src = "/assets/js/static.js";
     document.body.appendChild(s);
+    return;
   }
+
+  var need = window.Nocturne.staticNeed;
+  var rows = [
+    { name: "VEIL", have: window.Nocturne.bestScore("veil"), want: need.veil, unit: "score" },
+    { name: "SPLICE", have: window.Nocturne.bestScore("splice"), want: need.splice, unit: "boards" },
+    { name: "WYRM", have: window.Nocturne.bestScore("wyrm"), want: need.wyrm, unit: "length" }
+  ];
+  var list = document.getElementById("need-list");
+  rows.forEach(function (row) {
+    var li = document.createElement("li");
+    li.style.marginBottom = "0.45rem";
+    li.textContent = row.name + " wants " + row.want + " " + row.unit +
+      ". You have " + row.have + ".";
+    list.appendChild(li);
+  });
 })();
 </script>
 
