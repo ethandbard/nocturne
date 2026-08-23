@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About — NOCTURNE</title>
+<meta name="description" content="What NOCTURNE is, what it keeps, and what it does not.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="/assets/moth.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script>
+  try {
+    var s = JSON.parse(localStorage.getItem("nocturne.lights") || '"on"');
+    document.documentElement.setAttribute("data-lights", s === "out" ? "out" : "on");
+  } catch (e) {
+    document.documentElement.setAttribute("data-lights", "on");
+  }
+</script>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <a class="mark" href="/"><span class="dot"></span>NOCTURNE</a>
+    <nav class="nav">
+      <a href="/">Arcade</a>
+      <a href="/about.html" aria-current="page">About</a>
+      <a href="/games/pulse.html">Play</a>
+    </nav>
+  </header>
+
+  <section style="padding-top:2.5rem;">
+    <p class="eyebrow">About the place</p>
+    <h1>Four cabinets and a light cord.</h1>
+
+    <p>
+      NOCTURNE is a small arcade that runs entirely in your browser. Three games
+      are on the floor and a fourth is not, and everything about it &mdash; the
+      lighting, the scores, the things that move when you are not looking
+      &mdash; is a few hundred lines of plain JavaScript with no framework
+      underneath it and no server keeping notes.
+    </p>
+
+    <p>
+      It was built as an experiment in a particular kind of website: one that
+      behaves like a place rather than a document. Pages that remember what you
+      did on other pages. Objects that respond to being poked. A light switch
+      that is not a dark-mode toggle so much as a way of changing what is
+      actually there.
+    </p>
+
+    <h2 style="margin-top:2.5rem;">What it keeps</h2>
+    <p>
+      Your high scores, whether the lights are on, and which moths you have
+      caught. All three live in your browser under <code>localStorage</code> and
+      go no further. There is no account, no analytics, and nothing to log in
+      to. Clearing your site data resets the arcade to the state it was in
+      before you arrived, moths and all.
+    </p>
+
+    <h2 style="margin-top:2.5rem;">If you are stuck</h2>
+    <p class="muted">
+      Five moths are hidden across these pages, and the fourth cabinet stays
+      dark until every one of them is found. In rough order of how obvious they
+      are:
+    </p>
+    <ul class="muted" style="max-width: var(--measure); padding-left:1.2rem;">
+      <li style="margin-bottom:0.5rem;">One is in plain sight already, low-contrast against the furniture. It is resting on the sign.</li>
+      <li style="margin-bottom:0.5rem;">Two only exist when the room is dark. There is a cord in the top right corner of every page; one of these is downstairs on the front page, the other is on a cabinet.</li>
+      <li style="margin-bottom:0.5rem;">Two will not turn up until a cabinet has been played properly rather than glanced at. Finishing something is the trigger, not starting it.</li>
+    </ul>
+    <p class="muted" style="font-size:0.88rem;">
+      There is also an old cheat code that does nothing useful. It is worth
+      typing anyway.
+    </p>
+
+    <hr class="rule">
+
+    <p class="muted" style="font-size:0.9rem;">
+      Built by <a href="https://ethandbard.com">Ethan Bard</a>. Static files,
+      one container, no database. Source and notes are in the
+      <a href="https://ethandbard.github.io/nocturne/">documentation</a>.
+    </p>
+  </section>
+
+</div>
+
+<footer class="footer wrap">
+  <span><a href="/">&larr; back to the floor</a></span>
+  <span class="moth-count" data-moth-count>moths <b>0</b>/5</span>
+  <span>NOCTURNE</span>
+</footer>
+
+<script src="/assets/js/nocturne.js"></script>
+
+</body>
+</html>

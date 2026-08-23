@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LATTICE — NOCTURNE</title>
+<meta name="description" content="Rotate the conduits until current reaches every dead node.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="/assets/moth.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script>
+  try {
+    var s = JSON.parse(localStorage.getItem("nocturne.lights") || '"on"');
+    document.documentElement.setAttribute("data-lights", s === "out" ? "out" : "on");
+  } catch (e) {
+    document.documentElement.setAttribute("data-lights", "on");
+  }
+</script>
+</head>
+<body style="--accent: var(--purple);">
+
+<div class="wrap">
+
+  <header class="masthead">
+    <a class="mark" href="/"><span class="dot"></span>NOCTURNE</a>
+    <nav class="nav">
+      <a href="/">Arcade</a>
+      <a href="/games/pulse.html">Pulse</a>
+      <a href="/games/echo.html">Echo</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </header>
+
+  <section style="text-align:center; padding-top:1.5rem;">
+    <p class="eyebrow">Cabinet 02 &middot; Puzzle</p>
+    <h1 class="sign" style="font-size: clamp(2rem, 6vw, 3.4rem);">LATTICE</h1>
+  </section>
+
+  <div class="stage">
+    <div class="screen" style="aspect-ratio: 1 / 1; max-width: 560px;">
+      <canvas id="game" aria-label="LATTICE puzzle board" role="img"></canvas>
+
+      <div class="screen__overlay" id="overlay">
+        <h2 id="overlay-title">LATTICE</h2>
+        <p id="overlay-body">
+          Blue is the source. Click any tile to turn it a quarter turn. Every
+          green lamp has to end up connected. No timer, no failure state.
+        </p>
+        <button class="btn" id="overlay-btn" type="button">Open the board</button>
+      </div>
+
+      <!-- Fourth moth. Shaken loose by clearing a board. -->
+      <button class="moth moth--locked" data-moth="lattice" style="top: 12px; left: 14px;"></button>
+    </div>
+
+    <div class="hud">
+      <span>Level <b id="level">1</b></span>
+      <span>Turns <b id="moves">0</b></span>
+      <span>Cleared <b id="best">0</b></span>
+    </div>
+
+    <p class="keys"><kbd>click</kbd> a tile to rotate it clockwise</p>
+  </div>
+
+</div>
+
+<footer class="footer wrap">
+  <span><a href="/">&larr; back to the floor</a></span>
+  <span class="moth-count" data-moth-count>moths <b>0</b>/5</span>
+  <span>Cabinet 02</span>
+</footer>
+
+<script src="/assets/js/nocturne.js"></script>
+<script src="/assets/js/lattice.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PULSE — NOCTURNE</title>
+<meta name="description" content="Drift through the shards, gather the light, spend it on a shockwave.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="/assets/moth.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script>
+  try {
+    var s = JSON.parse(localStorage.getItem("nocturne.lights") || '"on"');
+    document.documentElement.setAttribute("data-lights", s === "out" ? "out" : "on");
+  } catch (e) {
+    document.documentElement.setAttribute("data-lights", "on");
+  }
+</script>
+</head>
+<body style="--accent: var(--blue);">
+
+<div class="wrap">
+
+  <header class="masthead">
+    <a class="mark" href="/"><span class="dot"></span>NOCTURNE</a>
+    <nav class="nav">
+      <a href="/">Arcade</a>
+      <a href="/games/lattice.html">Lattice</a>
+      <a href="/games/echo.html">Echo</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </header>
+
+  <section style="text-align:center; padding-top:1.5rem;">
+    <p class="eyebrow">Cabinet 01 &middot; Reflex</p>
+    <h1 class="sign" style="font-size: clamp(2rem, 6vw, 3.4rem);">PULSE</h1>
+  </section>
+
+  <div class="stage">
+    <div class="screen" style="position:relative;">
+      <canvas id="game" aria-label="PULSE game screen" role="img"></canvas>
+
+      <div class="screen__overlay" id="overlay">
+        <h2 id="overlay-title">PULSE</h2>
+        <p id="overlay-body">
+          Move with the mouse. Green motes charge you up; every eight give you a
+          shockwave. Click or press space to spend one. Touch a shard and it ends.
+        </p>
+        <button class="btn" id="overlay-btn" type="button">Begin</button>
+      </div>
+
+      <!-- Third moth. Rests on the bezel, but only once the room is dark. -->
+      <button class="moth moth--hidden" data-moth="pulse" style="bottom: 14px; right: 18px;"></button>
+    </div>
+
+    <div class="hud">
+      <span>Score <b id="score">0</b></span>
+      <span>Charge <b id="charge">0 / 3</b></span>
+      <span>Best <b id="best">0</b></span>
+    </div>
+
+    <p class="keys">
+      <kbd>mouse</kbd> move &nbsp;&middot;&nbsp; <kbd>click</kbd> / <kbd>space</kbd> pulse
+      &nbsp;&middot;&nbsp; <kbd>WASD</kbd> or <kbd>arrows</kbd> also work
+    </p>
+  </div>
+
+</div>
+
+<footer class="footer wrap">
+  <span><a href="/">&larr; back to the floor</a></span>
+  <span class="moth-count" data-moth-count>moths <b>0</b>/5</span>
+  <span>Cabinet 01</span>
+</footer>
+
+<script src="/assets/js/nocturne.js"></script>
+<script src="/assets/js/pulse.js"></script>
+
+</body>
+</html>

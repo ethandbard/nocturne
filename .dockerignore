@@ -1,0 +1,7 @@
+.git
+.github
+docs
+*.md
+!site/**/*.md
+.claude
+node_modules

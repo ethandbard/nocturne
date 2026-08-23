@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MOTH — NOCTURNE</title>
+<meta name="description" content="The lamp is a long way up and your light is going out.">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/moth.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script>
+  try {
+    var s = JSON.parse(localStorage.getItem("nocturne.lights") || '"on"');
+    document.documentElement.setAttribute("data-lights", s === "out" ? "out" : "on");
+  } catch (e) {
+    document.documentElement.setAttribute("data-lights", "on");
+  }
+</script>
+</head>
+<body style="--accent: var(--amber);">
+
+<div class="wrap">
+
+  <header class="masthead">
+    <a class="mark" href="/"><span class="dot"></span>NOCTURNE</a>
+    <nav class="nav">
+      <a href="/">Arcade</a>
+      <a href="/games/pulse.html">Pulse</a>
+      <a href="/games/lattice.html">Lattice</a>
+      <a href="/games/echo.html">Echo</a>
+    </nav>
+  </header>
+
+  <!-- Shown when someone arrives here without having found the moths. The URL
+       is guessable on purpose; the point is to be told what you are missing,
+       not to be stopped at a wall. -->
+  <section id="locked" hidden style="padding-top:3rem;">
+    <p class="eyebrow">Cabinet 04 &middot; Out of order</p>
+    <h1 class="sign" style="font-size: clamp(1.8rem, 5vw, 3rem);">SEALED</h1>
+    <p class="muted" style="margin-top:1.5rem;">
+      You found the door. The cabinet is still dark, and it will stay dark until
+      all five moths are accounted for. You have <b id="have">0</b> of them.
+    </p>
+    <p class="muted">
+      One is sitting in the open if you look at the edges of things. Two more
+      only turn up after you pull the cord in the top right corner. The last two
+      want a cabinet actually finished, not merely started.
+    </p>
+    <p style="margin-top:1.8rem;"><a class="btn" href="/">Back to the floor</a></p>
+  </section>
+
+  <section id="unlocked" hidden>
+    <div style="text-align:center; padding-top:1.5rem;">
+      <p class="eyebrow">Cabinet 04 &middot; Ascent</p>
+      <h1 class="sign" style="font-size: clamp(2rem, 6vw, 3.4rem);">MOTH</h1>
+    </div>
+
+    <div class="stage">
+      <div class="screen">
+        <canvas id="game" aria-label="MOTH game screen" role="img"></canvas>
+
+        <div class="screen__overlay" id="overlay">
+          <h2 id="overlay-title">MOTH</h2>
+          <p id="overlay-body">
+            Click or press space to flutter. Steer with the mouse. Your glow is
+            burning down, and it is the only thing letting you see the next beam
+            &mdash; green motes are what keep it lit. The floor rises behind you.
+          </p>
+          <button class="btn" id="overlay-btn" type="button">Climb</button>
+        </div>
+      </div>
+
+      <div class="hud">
+        <span>Height <b id="height">0</b></span>
+        <span>Glow <b id="glow">100%</b></span>
+        <span>Best <b id="best">0</b></span>
+      </div>
+
+      <p class="keys">
+        <kbd>click</kbd> / <kbd>space</kbd> flutter &nbsp;&middot;&nbsp;
+        <kbd>mouse</kbd> or <kbd>A</kbd><kbd>D</kbd> steer
+      </p>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer wrap">
+  <span><a href="/">&larr; back to the floor</a></span>
+  <span class="moth-count" data-moth-count>moths <b>0</b>/5</span>
+  <span>Cabinet 04</span>
+</footer>
+
+<script src="/assets/js/nocturne.js"></script>
+<script>
+(function () {
+  "use strict";
+  var open = window.Nocturne.allCaught();
+  document.getElementById(open ? "unlocked" : "locked").hidden = false;
+
+  if (open) {
+    var s = document.createElement("script");
+    s.src = "/assets/js/mothgame.js";
+    document.body.appendChild(s);
+  } else {
+    document.getElementById("have").textContent = window.Nocturne.caught().length;
+  }
+})();
+</script>
+
+</body>
+</html>

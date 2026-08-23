@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ECHO — NOCTURNE</title>
+<meta name="description" content="The room plays a phrase back at you. Repeat it. It gets longer.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="/assets/moth.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script>
+  try {
+    var s = JSON.parse(localStorage.getItem("nocturne.lights") || '"on"');
+    document.documentElement.setAttribute("data-lights", s === "out" ? "out" : "on");
+  } catch (e) {
+    document.documentElement.setAttribute("data-lights", "on");
+  }
+</script>
+<style>
+  /* Pad grid is specific to this cabinet, so it lives with the page rather
+     than in the shared sheet. Each pad carries its own --hue. */
+  .grid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 22px;
+  }
+
+  .pad {
+    border: 1px solid hsl(var(--hue) 60% 26%);
+    border-radius: 12px;
+    background: hsl(var(--hue) 55% 9%);
+    cursor: pointer;
+    transition: background 130ms ease, box-shadow 130ms ease, transform 90ms ease, border-color 130ms ease;
+  }
+  .pad:hover { border-color: hsl(var(--hue) 70% 45%); }
+  .pad:active { transform: scale(0.98); }
+
+  .pad--lit {
+    background: hsl(var(--hue) 85% 62%);
+    border-color: hsl(var(--hue) 90% 78%);
+    box-shadow:
+      0 0 calc(30px * var(--glow-strength)) hsl(var(--hue) 90% 60% / 0.85),
+      inset 0 0 24px hsl(var(--hue) 95% 82% / 0.5);
+  }
+
+  .pad--wrong {
+    background: #7f1d1d;
+    border-color: #ef4444;
+    box-shadow: 0 0 34px rgba(239, 68, 68, 0.7);
+  }
+
+  /* While the room is playing its phrase, the pads are not yours to press. */
+  .grid--watching .pad { cursor: default; }
+  .grid--watching { opacity: 0.92; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pad { transition: none; }
+  }
+</style>
+</head>
+<body style="--accent: var(--green);">
+
+<div class="wrap">
+
+  <header class="masthead">
+    <a class="mark" href="/"><span class="dot"></span>NOCTURNE</a>
+    <nav class="nav">
+      <a href="/">Arcade</a>
+      <a href="/games/pulse.html">Pulse</a>
+      <a href="/games/lattice.html">Lattice</a>
+      <a href="/about.html">About</a>
+    </nav>
+  </header>
+
+  <section style="text-align:center; padding-top:1.5rem;">
+    <p class="eyebrow">Cabinet 03 &middot; Memory</p>
+    <h1 class="sign" style="font-size: clamp(2rem, 6vw, 3.4rem);">ECHO</h1>
+  </section>
+
+  <div class="stage">
+    <div class="screen" style="aspect-ratio: 1 / 1; max-width: 520px;">
+      <div class="grid" id="grid"></div>
+
+      <div class="screen__overlay" id="overlay">
+        <h2 id="overlay-title">ECHO</h2>
+        <p id="overlay-body">
+          Watch the phrase, then play it back. One pad longer every round, and
+          it stops waiting for you. Sound on is better.
+        </p>
+        <button class="btn" id="overlay-btn" type="button">Listen</button>
+      </div>
+
+      <!-- Fifth moth. Turns up once the noise has been going a while. -->
+      <button class="moth moth--locked" data-moth="echo" style="bottom: 10px; left: 50%;"></button>
+    </div>
+
+    <div class="hud">
+      <span>Round <b id="round">0</b></span>
+      <span>Length <b id="length">0</b></span>
+      <span>Best <b id="best">0</b></span>
+    </div>
+
+    <p class="keys"><kbd>click</kbd> the pads in the order you heard them</p>
+  </div>
+
+</div>
+
+<footer class="footer wrap">
+  <span><a href="/">&larr; back to the floor</a></span>
+  <span class="moth-count" data-moth-count>moths <b>0</b>/5</span>
+  <span>Cabinet 03</span>
+</footer>
+
+<script src="/assets/js/nocturne.js"></script>
+<script src="/assets/js/echo.js"></script>
+
+</body>
+</html>

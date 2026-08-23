@@ -1,0 +1,529 @@
+/* NOCTURNE — shared theme.
+   Two lighting states drive nearly everything: the default dim room, and
+   `data-lights="out"` on <html>, which kills ambient light so the neon and the
+   hidden things carry the page. Anything that changes between the two is a
+   custom property, never a hard-coded colour in a rule. */
+
+@import url("https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Space+Grotesk:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap");
+
+:root {
+  --purple: #a855f7;
+  --purple-dim: #6d28d9;
+  --blue: #38bdf8;
+  --blue-dim: #0369a1;
+  --green: #4ade80;
+  --green-dim: #15803d;
+  --amber: #fbbf24;
+
+  /* Lighting-dependent. Overridden wholesale when the lights go out. */
+  --bg: #0b0a12;
+  --bg-raised: #14121f;
+  --bg-sunken: #08070e;
+  --ink: #e8e6f0;
+  --ink-soft: #9b96b3;
+  --ink-faint: #575269;
+  --edge: #241f36;
+  --glow-strength: 0.55;
+  --room-light: 1;
+
+  --shadow-lift: 0 18px 50px -20px rgba(0, 0, 0, 0.9);
+  --font-display: "Silkscreen", "Courier New", monospace;
+  --font-body: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Space Mono", ui-monospace, "Cascadia Code", monospace;
+  --measure: 62ch;
+}
+
+html[data-lights="out"] {
+  --bg: #000000;
+  --bg-raised: #050408;
+  --bg-sunken: #000000;
+  --ink: #6f6a86;
+  --ink-soft: #3d3950;
+  --ink-faint: #221f2e;
+  --edge: #12101c;
+  --glow-strength: 1;
+  --room-light: 0;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.65;
+  overflow-x: hidden;
+  transition: background 700ms ease, color 700ms ease;
+}
+
+/* Ambient light in the room. Fades to nothing when the lights are out, which
+   is what makes the neon read as the only thing still glowing. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: var(--room-light);
+  transition: opacity 700ms ease;
+  background:
+    radial-gradient(900px 620px at 50% -8%, rgba(168, 85, 247, 0.16), transparent 70%),
+    radial-gradient(700px 520px at 88% 18%, rgba(56, 189, 248, 0.10), transparent 72%),
+    radial-gradient(760px 600px at 8% 82%, rgba(74, 222, 128, 0.07), transparent 74%);
+}
+
+/* Scanlines. Always present, but they only really show once the room is dark. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: calc(0.14 + 0.22 * (1 - var(--room-light)));
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.5) 3px,
+    rgba(0, 0, 0, 0.5) 4px
+  );
+  transition: opacity 700ms ease;
+}
+
+.wrap {
+  position: relative;
+  z-index: 1;
+  width: min(1080px, calc(100% - 3rem));
+  margin-inline: auto;
+}
+
+/* ---------------------------------------------------------------- type --- */
+
+h1, h2, h3 { font-weight: 500; line-height: 1.15; letter-spacing: -0.015em; margin: 0 0 0.6em; }
+h1 { font-size: clamp(2.1rem, 5vw, 3.2rem); }
+h2 { font-size: clamp(1.4rem, 3vw, 1.9rem); }
+h3 { font-size: 1.1rem; }
+
+p { margin: 0 0 1.1em; max-width: var(--measure); }
+
+a { color: var(--blue); text-decoration-color: color-mix(in srgb, var(--blue) 40%, transparent); text-underline-offset: 3px; }
+a:hover { color: var(--green); }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 1rem;
+}
+
+.muted { color: var(--ink-soft); }
+
+/* -------------------------------------------------------------- header --- */
+
+.masthead {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.6rem 0 1.2rem;
+}
+
+.mark {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.16em;
+  color: var(--ink);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.mark:hover { color: var(--ink); }
+.mark .dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 calc(14px * var(--glow-strength)) var(--green);
+  animation: breathe 3.4s ease-in-out infinite;
+}
+@keyframes breathe { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+.nav { display: flex; gap: 1.4rem; font-size: 0.85rem; font-family: var(--font-mono); }
+.nav a { color: var(--ink-soft); text-decoration: none; letter-spacing: 0.05em; }
+.nav a:hover, .nav a[aria-current="page"] { color: var(--green); }
+
+/* ---------------------------------------------------------- neon sign --- */
+
+.sign {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 9vw, 6rem);
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  margin: 0;
+  text-shadow:
+    0 0 calc(8px * var(--glow-strength)) color-mix(in srgb, var(--purple) 90%, transparent),
+    0 0 calc(28px * var(--glow-strength)) color-mix(in srgb, var(--purple) 70%, transparent),
+    0 0 calc(64px * var(--glow-strength)) color-mix(in srgb, var(--blue) 45%, transparent);
+  transition: text-shadow 700ms ease;
+}
+html[data-lights="out"] .sign { color: #cfc8ee; }
+
+/* One letter flickers like a tired tube. It is also a moth hiding place. */
+.sign .flick { animation: flicker 6s linear infinite; }
+@keyframes flicker {
+  0%, 43%, 45%, 55%, 57%, 100% { opacity: 1; }
+  44%, 56% { opacity: 0.25; }
+  46% { opacity: 0.6; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sign .flick, .mark .dot { animation: none; }
+}
+
+/* ------------------------------------------------------------ cabinets --- */
+
+.cabinets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.4rem;
+  margin: 2.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cab {
+  position: relative;
+  display: block;
+  padding: 1.5rem 1.4rem 1.3rem;
+  background: linear-gradient(180deg, var(--bg-raised), var(--bg-sunken));
+  border: 1px solid var(--edge);
+  border-radius: 14px;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 260ms cubic-bezier(0.2, 0.9, 0.3, 1), border-color 260ms ease, box-shadow 260ms ease;
+}
+
+/* Each cabinet owns an accent colour, set per card with --accent. */
+.cab::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 2px;
+  background: var(--accent, var(--purple));
+  box-shadow: 0 0 calc(18px * var(--glow-strength)) var(--accent, var(--purple));
+  opacity: 0.85;
+}
+.cab::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0;
+  background: radial-gradient(420px 240px at 50% 0%, color-mix(in srgb, var(--accent, var(--purple)) 22%, transparent), transparent 70%);
+  transition: opacity 260ms ease;
+}
+.cab:hover, .cab:focus-visible {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--accent, var(--purple)) 55%, var(--edge));
+  box-shadow: var(--shadow-lift);
+}
+.cab:hover::after, .cab:focus-visible::after { opacity: 1; }
+
+.cab__name {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  letter-spacing: 0.08em;
+  margin: 0.7rem 0 0.5rem;
+  color: var(--ink);
+}
+.cab__kind {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent, var(--purple));
+}
+.cab__desc { font-size: 0.92rem; color: var(--ink-soft); margin: 0; max-width: none; }
+.cab__best {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+  margin-top: 0.9rem;
+  letter-spacing: 0.06em;
+}
+
+/* The fourth cabinet: dead until every moth is found. */
+.cab--dark { cursor: not-allowed; filter: grayscale(1); opacity: 0.42; }
+.cab--dark:hover { transform: none; box-shadow: none; border-color: var(--edge); }
+.cab--dark .cab__name { color: var(--ink-faint); }
+.cab--live { cursor: pointer; filter: none; opacity: 1; }
+
+/* ------------------------------------------------------------- pieces --- */
+
+.panel {
+  background: var(--bg-raised);
+  border: 1px solid var(--edge);
+  border-radius: 14px;
+  padding: 1.4rem 1.5rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.6rem 1.15rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent, var(--green)) 45%, var(--edge));
+  background: color-mix(in srgb, var(--accent, var(--green)) 10%, transparent);
+  color: var(--accent, var(--green));
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 200ms ease, box-shadow 200ms ease, transform 120ms ease;
+}
+.btn:hover {
+  background: color-mix(in srgb, var(--accent, var(--green)) 20%, transparent);
+  box-shadow: 0 0 calc(22px * var(--glow-strength)) color-mix(in srgb, var(--accent, var(--green)) 40%, transparent);
+  color: var(--accent, var(--green));
+}
+.btn:active { transform: translateY(1px); }
+
+hr.rule { border: 0; border-top: 1px solid var(--edge); margin: 3rem 0; }
+
+/* ------------------------------------------------------------- footer --- */
+
+.footer {
+  position: relative;
+  z-index: 1;
+  margin-top: 5rem;
+  padding: 2rem 0 3.5rem;
+  border-top: 1px solid var(--edge);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.06em;
+}
+.footer a { color: var(--ink-soft); text-decoration: none; }
+.footer a:hover { color: var(--green); }
+
+/* ---------------------------------------------------------- pull cord --- */
+
+/* Fixed to the top-right of every page. Pulling it flips the lighting state,
+   which persists across navigation, so the whole site changes together. */
+.cord {
+  position: fixed;
+  top: 0;
+  right: clamp(1.5rem, 6vw, 5rem);
+  z-index: 9999;
+  width: 34px;
+  height: 168px;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  transform-origin: top center;
+  transition: transform 200ms cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+.cord:hover { transform: translateY(5px); }
+.cord:active { transform: translateY(13px); }
+.cord__line { stroke: var(--ink-faint); stroke-width: 1.4; }
+.cord__knob { fill: var(--ink-soft); }
+.cord:hover .cord__knob { fill: var(--green); }
+
+/* ------------------------------------------------------------- moths --- */
+
+/* Collectible. Some sit in plain sight at low contrast; others only render
+   once the lights are out, which is the whole point of the pull cord. */
+.moth {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  color: var(--ink-faint);
+  opacity: 0.5;
+  transition: opacity 300ms ease, transform 300ms ease, color 300ms ease;
+  z-index: 5;
+}
+.moth:hover { opacity: 1; color: var(--purple); transform: scale(1.35) rotate(-8deg); }
+.moth svg { width: 100%; height: 100%; display: block; }
+
+/* Lights-out-only moths: invisible and unclickable while the room is lit. */
+.moth--hidden { opacity: 0; pointer-events: none; }
+html[data-lights="out"] .moth--hidden { opacity: 0.75; pointer-events: auto; color: var(--green); }
+html[data-lights="out"] .moth { filter: drop-shadow(0 0 6px currentColor); }
+
+/* Earned moths: gated on having actually played the cabinet, so unlike
+   `--hidden` these stay invisible no matter what the lights are doing.
+   Nocturne.revealMoth() lifts the class. */
+.moth--locked { opacity: 0; pointer-events: none; }
+html[data-lights="out"] .moth--locked { opacity: 0; pointer-events: none; }
+
+.moth--found { display: none; }
+
+.moth-count {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.18em;
+  color: var(--ink-faint);
+}
+.moth-count b { color: var(--green); font-weight: 700; }
+
+/* --------------------------------------------------------- game shell --- */
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  margin: 1rem 0 0;
+}
+
+.screen {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 4 / 3;
+  border-radius: 16px;
+  border: 1px solid var(--edge);
+  background: var(--bg-sunken);
+  overflow: hidden;
+  box-shadow: var(--shadow-lift), inset 0 0 90px rgba(0, 0, 0, 0.8);
+  touch-action: none;
+}
+.screen canvas { display: block; width: 100%; height: 100%; }
+
+/* Overlay used for every start / pause / game-over state. */
+.screen__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  text-align: center;
+  padding: 2rem;
+  background: color-mix(in srgb, var(--bg-sunken) 88%, transparent);
+  backdrop-filter: blur(3px);
+}
+.screen__overlay[hidden] { display: none; }
+.screen__overlay h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 4vw, 2rem);
+  margin: 0;
+  color: var(--accent, var(--purple));
+  text-shadow: 0 0 calc(24px * var(--glow-strength)) var(--accent, var(--purple));
+}
+.screen__overlay p { color: var(--ink-soft); font-size: 0.92rem; margin: 0; max-width: 42ch; }
+
+.hud {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.hud span b {
+  display: block;
+  font-size: 1.5rem;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  font-weight: 400;
+}
+
+.keys {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--ink-faint);
+  text-align: center;
+}
+.keys kbd {
+  font: inherit;
+  background: var(--bg-raised);
+  border: 1px solid var(--edge);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  padding: 0.1rem 0.42rem;
+  color: var(--ink-soft);
+}
+
+/* ---------------------------------------------------------- messages --- */
+
+/* Bottom-centre transient notices: moth pickups, unlocks, cabinet snark. */
+.toast-rail {
+  position: fixed;
+  left: 50%;
+  bottom: 2rem;
+  transform: translateX(-50%);
+  z-index: 9997;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+.toast {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  background: var(--bg-raised);
+  border: 1px solid color-mix(in srgb, var(--accent, var(--green)) 45%, var(--edge));
+  color: var(--accent, var(--green));
+  box-shadow: 0 0 calc(30px * var(--glow-strength)) color-mix(in srgb, var(--accent, var(--green)) 25%, transparent);
+  animation: toast-in 300ms cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+.toast--out { animation: toast-out 400ms ease forwards; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(14px); } }
+@keyframes toast-out { to { opacity: 0; transform: translateY(-10px); } }
+
+/* CRT reboot wipe, triggered by the Konami code. */
+.crt-wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: #cfe8ff;
+  mix-blend-mode: screen;
+  animation: crt 900ms steps(1, end) forwards;
+}
+@keyframes crt {
+  0% { opacity: 0.95; transform: scaleY(0.004); }
+  22% { opacity: 0.9; transform: scaleY(1); }
+  55% { opacity: 0.35; }
+  100% { opacity: 0; transform: scaleY(1); }
+}
+
+@media (max-width: 640px) {
+  .wrap { width: calc(100% - 2rem); }
+  .masthead { flex-direction: column; align-items: flex-start; gap: 0.7rem; }
+  .cord { right: 1rem; height: 120px; }
+}

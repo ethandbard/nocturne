@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOCTURNE</title>
+<meta name="description" content="A small arcade that keeps odd hours. Three cabinets, no coins, open all night.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="/assets/moth.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script>
+  /* Restore the lighting state before first paint. Waiting for nocturne.js
+     would flash a lit room at someone who left the lights off. */
+  try {
+    var s = JSON.parse(localStorage.getItem("nocturne.lights") || '"on"');
+    document.documentElement.setAttribute("data-lights", s === "out" ? "out" : "on");
+  } catch (e) {
+    document.documentElement.setAttribute("data-lights", "on");
+  }
+</script>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <a class="mark" href="/"><span class="dot"></span>NOCTURNE</a>
+    <nav class="nav">
+      <a href="/" aria-current="page">Arcade</a>
+      <a href="/about.html">About</a>
+      <a href="/games/pulse.html">Play</a>
+    </nav>
+  </header>
+
+  <section class="hero" style="position:relative; padding: 3.5rem 0 1rem;">
+    <p class="eyebrow">Est. whenever &middot; Open now</p>
+    <!-- The moth is anchored to the sign itself, so it stays on the tube at
+         every width instead of drifting into the copy below. -->
+    <h1 class="sign" style="position:relative; display:inline-block;">NOCTU<span class="flick">R</span>NE<button class="moth" data-moth="sign" style="bottom: 6%; right: -6px;"></button></h1>
+
+    <p class="muted" style="margin-top:1.4rem; font-size:1.05rem; max-width:52ch;">
+      A small arcade that keeps odd hours. Three cabinets, no coin slot,
+      nobody at the counter. <span id="hours">The lights are on, so somebody must be in.</span>
+    </p>
+
+    <p style="margin-top:1.6rem;">
+      <a class="btn" href="/games/pulse.html" style="--accent: var(--blue);">Start with PULSE</a>
+    </p>
+  </section>
+
+  <hr class="rule">
+
+  <section>
+    <p class="eyebrow">On the floor</p>
+    <h2>Four cabinets. One of them is broken.</h2>
+
+    <ul class="cabinets">
+      <li>
+        <a class="cab" href="/games/pulse.html" style="--accent: var(--blue);">
+          <span class="cab__kind">Reflex</span>
+          <h3 class="cab__name">PULSE</h3>
+          <p class="cab__desc">Drift through the shards, gather the light. Spend it on a shockwave when the screen closes in.</p>
+          <p class="cab__best" data-best="pulse">Best &mdash; none yet</p>
+        </a>
+      </li>
+      <li>
+        <a class="cab" href="/games/lattice.html" style="--accent: var(--purple);">
+          <span class="cab__kind">Puzzle</span>
+          <h3 class="cab__name">LATTICE</h3>
+          <p class="cab__desc">Rotate the conduits until current reaches every dead node. Ten seconds or ten minutes, depending.</p>
+          <p class="cab__best" data-best="lattice">Best &mdash; none yet</p>
+        </a>
+      </li>
+      <li>
+        <a class="cab" href="/games/echo.html" style="--accent: var(--green);">
+          <span class="cab__kind">Memory</span>
+          <h3 class="cab__name">ECHO</h3>
+          <p class="cab__desc">The room plays a phrase back at you. Repeat it. It gets longer, and it stops waiting.</p>
+          <p class="cab__best" data-best="echo">Best &mdash; none yet</p>
+        </a>
+      </li>
+      <li>
+        <!-- Dead until all five moths are caught, at which point nocturne.js
+             swaps the copy and turns it into a real link. -->
+        <a class="cab cab--dark" id="cab-moth" href="#" style="--accent: var(--amber);">
+          <span class="cab__kind">Out of order</span>
+          <h3 class="cab__name">&mdash;&mdash;&mdash;&mdash;</h3>
+          <p class="cab__desc">The marquee is dark and the coin return is taped shut. Something is still humming inside it.</p>
+          <p class="cab__best">Best &mdash; unavailable</p>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <hr class="rule">
+
+  <section style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap:1.4rem;">
+    <div class="panel">
+      <p class="eyebrow">House rules</p>
+      <p style="margin:0; font-size:0.94rem;" class="muted">
+        No coins. No accounts. Scores live in your browser and nowhere else.
+        If you clear your history, the arcade forgets you completely.
+      </p>
+    </div>
+    <div class="panel">
+      <p class="eyebrow">The cord</p>
+      <p style="margin:0; font-size:0.94rem;" class="muted">
+        There is a pull cord hanging in the top right corner of every room.
+        It does what pull cords do. Some things only turn up after you use it.
+      </p>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer wrap" style="position:relative;">
+  <span>NOCTURNE &mdash; open all night</span>
+  <!-- Second moth. Only rendered once the lights are out. -->
+  <button class="moth moth--hidden" data-moth="cellar" style="bottom: 2.2rem; left: 42%;"></button>
+  <span class="moth-count" data-moth-count>moths <b>0</b>/5</span>
+  <span><a href="/about.html">About</a></span>
+</footer>
+
+<script src="/assets/js/nocturne.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  /* The greeting tracks the visitor's actual clock. Small thing, but it is
+     what sells "this place is open right now" rather than "this is a page". */
+  var hour = new Date().getHours();
+  var line =
+    hour >= 2 && hour < 5 ? "It is the part of the night nobody schedules." :
+    hour >= 5 && hour < 11 ? "You are early. Or very late. Hard to say." :
+    hour >= 11 && hour < 17 ? "Daylight. The cabinets look worse in daylight." :
+    hour >= 17 && hour < 22 ? "Good hour for it." :
+    "The lights are on, so somebody must be in.";
+  document.getElementById("hours").textContent = line;
+
+  /* Pull each cabinet's stored best onto its card, so the landing page
+     reflects what you did inside the games. */
+  var labels = { pulse: "Best", lattice: "Cleared", echo: "Round" };
+  Object.keys(labels).forEach(function (game) {
+    var node = document.querySelector('[data-best="' + game + '"]');
+    var best = window.Nocturne.bestScore(game);
+    if (node && best > 0) node.innerHTML = labels[game] + " &mdash; " + best;
+  });
+
+  /* The broken cabinet. Clicking it while locked gets you a different brush-off
+     each time; the last one is a hint. */
+  var SNARK = [
+    "The cabinet does not respond.",
+    "Still nothing. The hum gets slightly louder.",
+    "You can hear wings against the inside of the glass.",
+    "Something in there is counting. It is not done.",
+    "Five, it wants. It will not say five what.",
+    "Try the cord. Then look where the light was."
+  ];
+  var pokes = 0;
+
+  var cab = document.getElementById("cab-moth");
+
+  function openCabinet(announce) {
+    cab.classList.remove("cab--dark");
+    cab.classList.add("cab--live");
+    cab.setAttribute("href", "/games/moth.html");
+    cab.querySelector(".cab__kind").textContent = "Secret";
+    cab.querySelector(".cab__name").textContent = "MOTH";
+    cab.querySelector(".cab__desc").textContent =
+      "The lamp is a long way up and your light is going out. Flutter, and do not touch the dark.";
+    var best = window.Nocturne.bestScore("moth");
+    cab.querySelector(".cab__best").innerHTML =
+      best > 0 ? "Height &mdash; " + best : "Best &mdash; none yet";
+    if (announce) window.Nocturne.toast("the back cabinet is open", "#fbbf24", 4000);
+  }
+
+  if (window.Nocturne.allCaught()) {
+    openCabinet(false);
+  } else {
+    cab.addEventListener("click", function (event) {
+      event.preventDefault();
+      window.Nocturne.toast(SNARK[Math.min(pokes, SNARK.length - 1)], "#fbbf24", 3200);
+      pokes++;
+    });
+  }
+
+  /* Catching the last moth opens the cabinet without a reload. */
+  window.addEventListener("nocturne:unlocked", function () { openCabinet(true); });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # The tunnel routes to this name over the shared edge network.
+    container_name: nocturne
+
+    restart: unless-stopped
+
+    # No ports. cloudflared reaches the container by name on edge.
+    networks:
+      - edge
+
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/healthz"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  edge:
+    external: true
