@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>STATIC — NOCTURNE</title>
+<meta name="description" content="Something underneath the noise, once the new machines have all been run once.">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/moth.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/css/site.css">
+<script>
+  try {
+    var s = JSON.parse(localStorage.getItem("nocturne.lights") || '"on"');
+    document.documentElement.setAttribute("data-lights", s === "out" ? "out" : "on");
+  } catch (e) {
+    document.documentElement.setAttribute("data-lights", "on");
+  }
+</script>
+</head>
+<body style="--accent: color-mix(in srgb, var(--blue) 30%, var(--ink-soft));">
+
+<div class="wrap">
+
+  <header class="masthead">
+    <a class="mark" href="/"><span class="dot"></span>NOCTURNE</a>
+    <nav class="nav">
+      <a href="/">Arcade</a>
+      <a href="/games/veil.html">Veil</a>
+      <a href="/games/splice.html">Splice</a>
+      <a href="/games/wyrm.html">Wyrm</a>
+    </nav>
+  </header>
+
+  <!-- Guessable on purpose, same as MOTH: arriving early gets told what is
+       missing instead of a wall. -->
+  <section id="locked" hidden style="padding-top:3rem;">
+    <p class="eyebrow">Cabinet 08 &middot; Unlisted</p>
+    <h1 class="sign" style="font-size: clamp(1.8rem, 5vw, 3rem);">NOTHING BUT NOISE</h1>
+    <p class="muted" style="margin-top:1.5rem;">
+      There is a signal here, but it is buried. It only comes through once
+      VEIL, SPLICE, and WYRM have each been run to the end at least once &mdash;
+      cleared or not does not matter, only finished.
+    </p>
+    <p style="margin-top:1.8rem;"><a class="btn" href="/">Back to the floor</a></p>
+  </section>
+
+  <section id="unlocked" hidden>
+    <div style="text-align:center; padding-top:1.5rem;">
+      <p class="eyebrow">Cabinet 08 &middot; Signal</p>
+      <h1 class="sign" style="font-size: clamp(2rem, 6vw, 3.4rem);">STATIC</h1>
+    </div>
+
+    <div class="stage">
+      <div class="screen" style="aspect-ratio: 13 / 8.5; max-width: 560px; cursor:pointer;">
+        <canvas id="dial" aria-label="A tuning dial" role="img"></canvas>
+      </div>
+      <p class="keys" id="dial-hint">drag the needle, or use the arrow keys</p>
+
+      <div class="panel" id="reveal" hidden style="max-width: 46ch; text-align:center;">
+        <p class="eyebrow">Logged, whenever this was</p>
+        <p class="muted" style="margin:0;">
+          Three machines, run once each, and the noise clears just enough to
+          say: nobody built the rest of this place either. It was always just
+          you, finding what was already here.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="footer wrap">
+  <span><a href="/">&larr; back to the floor</a></span>
+  <span class="moth-count" data-moth-count>moths <b>0</b>/5</span>
+  <span>Cabinet 08</span>
+</footer>
+
+<script src="/assets/js/nocturne.js"></script>
+<script src="/assets/js/radio.js"></script>
+<script>
+(function () {
+  "use strict";
+  var open = window.Nocturne.bestScore("veil") > 0 &&
+             window.Nocturne.bestScore("splice") > 0 &&
+             window.Nocturne.bestScore("wyrm") > 0;
+  document.getElementById(open ? "unlocked" : "locked").hidden = false;
+
+  if (open) {
+    var s = document.createElement("script");
+    s.src = "/assets/js/static.js";
+    document.body.appendChild(s);
+  }
+})();
+</script>
+
+</body>
+</html>

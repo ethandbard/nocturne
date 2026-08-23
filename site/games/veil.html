@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LATTICE — NOCTURNE</title>
-<meta name="description" content="Rotate the conduits until current reaches every dead node.">
+<title>VEIL — NOCTURNE</title>
+<meta name="description" content="Beams read motion, not position. Stand still and you are almost nothing.">
 <meta name="color-scheme" content="dark">
 <link rel="icon" href="/assets/moth.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/assets/css/site.css">
@@ -17,7 +17,7 @@
   }
 </script>
 </head>
-<body style="--accent: var(--purple);">
+<body style="--accent: color-mix(in srgb, var(--blue) 45%, var(--purple));">
 
 <div class="wrap">
 
@@ -26,8 +26,8 @@
     <nav class="nav">
       <a href="/">Arcade</a>
       <a href="/games/pulse.html">Pulse</a>
+      <a href="/games/lattice.html">Lattice</a>
       <a href="/games/echo.html">Echo</a>
-      <a href="/games/veil.html">Veil</a>
       <a href="/games/splice.html">Splice</a>
       <a href="/games/wyrm.html">Wyrm</a>
       <a href="/about.html">About</a>
@@ -35,34 +35,35 @@
   </header>
 
   <section style="text-align:center; padding-top:1.5rem;">
-    <p class="eyebrow">Cabinet 02 &middot; Puzzle</p>
-    <h1 class="sign" style="font-size: clamp(2rem, 6vw, 3.4rem);">LATTICE</h1>
+    <p class="eyebrow">Cabinet 05 &middot; Stealth</p>
+    <h1 class="sign" style="font-size: clamp(2rem, 6vw, 3.4rem);">VEIL</h1>
   </section>
 
   <div class="stage">
-    <div class="screen" style="aspect-ratio: 1 / 1; max-width: 560px;">
-      <canvas id="game" aria-label="LATTICE puzzle board" role="img"></canvas>
+    <div class="screen" style="position:relative;">
+      <canvas id="game" aria-label="VEIL game screen" role="img"></canvas>
 
       <div class="screen__overlay" id="overlay">
-        <h2 id="overlay-title">LATTICE</h2>
+        <h2 id="overlay-title">VEIL</h2>
         <p id="overlay-body">
-          Blue is the source. Click any tile to turn it a quarter turn. Every
-          green lamp has to end up connected. No timer, no failure state.
+          Move with the mouse or WASD. Sweeping beams cannot see you well while
+          you hold still &mdash; sprint through one and your exposure climbs
+          fast. Let it fill and the run ends. Green motes bleed exposure off.
         </p>
-        <button class="btn" id="overlay-btn" type="button">Open the board</button>
+        <button class="btn" id="overlay-btn" type="button">Begin</button>
       </div>
-
-      <!-- Fourth moth. Shaken loose by clearing a board. -->
-      <button class="moth moth--locked" data-moth="lattice" style="top: 12px; left: 14px;"></button>
     </div>
 
     <div class="hud">
-      <span>Level <b id="level">1</b></span>
-      <span>Turns <b id="moves">0</b></span>
-      <span>Cleared <b id="best">0</b></span>
+      <span>Score <b id="score">0</b></span>
+      <span>Exposure <b id="exposure">0%</b></span>
+      <span>Best <b id="best">0</b></span>
     </div>
 
-    <p class="keys"><kbd>click</kbd> a tile to rotate it clockwise</p>
+    <p class="keys">
+      <kbd>mouse</kbd> move &nbsp;&middot;&nbsp; <kbd>WASD</kbd> or <kbd>arrows</kbd> also work
+      &nbsp;&middot;&nbsp; holding still is the strategy
+    </p>
   </div>
 
 </div>
@@ -70,12 +71,12 @@
 <footer class="footer wrap">
   <span><a href="/">&larr; back to the floor</a></span>
   <span class="moth-count" data-moth-count>moths <b>0</b>/5</span>
-  <span>Cabinet 02</span>
+  <span>Cabinet 05</span>
 </footer>
 
 <script src="/assets/js/nocturne.js"></script>
 <script src="/assets/js/radio.js"></script>
-<script src="/assets/js/lattice.js"></script>
+<script src="/assets/js/veil.js"></script>
 
 </body>
 </html>

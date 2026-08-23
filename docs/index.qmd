@@ -10,9 +10,10 @@ Static site &middot; No framework &middot; Cloudflare Pages
 # A browser arcade that behaves like a place
 
 ::: {.lede}
-Three games sit on the floor and a fourth stays sealed. A pull cord in the
-corner turns the lights off, and some things only exist in the dark. What you
-do in one room shows up in another, because the arcade keeps notes.
+Six games sit on the floor and two stay sealed. A pull cord in the corner
+turns the lights off, a radio in the other corner plays something low, and
+some things only exist in the dark. What you do in one room shows up in
+another, because the arcade keeps notes.
 :::
 :::
 
@@ -52,6 +53,34 @@ wrong answer still sounds like music instead of a buzzer.
 :::
 
 ::: {}
+[05 &middot; Stealth]{.num}
+
+### VEIL
+
+Sweeping searchlights read motion, not position. Sprint through one and your
+exposure spikes; hold still inside the same beam and it barely notices you.
+:::
+
+::: {}
+[06 &middot; Precision]{.num}
+
+### SPLICE
+
+Two columns of colored terminals. Match every pair before the panel's clock
+runs out — a clean splice buys a sliver of time back, a wrong guess costs
+much more than that.
+:::
+
+::: {}
+[07 &middot; Reflex]{.num}
+
+### WYRM
+
+Classic snake, re-skinned as a glowing trail on a dark grid. Every mote eaten
+grows the trail and tightens the tick rate.
+:::
+
+::: {}
 [04 &middot; Sealed]{.num}
 
 ### MOTH
@@ -59,10 +88,29 @@ wrong answer still sounds like music instead of a buzzer.
 Climb toward a lamp while your glow burns down. The glow is also your draw
 radius, so running low on light means you cannot see the next beam coming.
 :::
+
+::: {}
+[08 &middot; Sealed]{.num}
+
+### STATIC
+
+A tuning-dial vignette, not a full game. Unlocks once VEIL, SPLICE, and WYRM
+have each been finished once — no relation to the moths.
+:::
 :::
 
 MOTH is not reachable on a first visit. It opens once all five hidden moths
-have been found.
+have been found. STATIC is a second, unrelated secret: it opens once VEIL,
+SPLICE, and WYRM have each been finished once.
+
+## The radio
+
+A tuning dial fixed to the bottom-left corner of every page, backed by the
+YouTube IFrame API and a small curated list of lo-fi/synthwave live streams.
+Power state never survives a navigation on a plain multi-page site like this
+one, so it always starts off — but the chosen station and volume persist in
+`localStorage` under `nocturne.radio.station` and `nocturne.radio.volume`,
+the same way everything else here persists.
 
 ## What makes it feel like one building
 
@@ -148,8 +196,8 @@ with information is the point.
 
 ## How it is built
 
-No framework, no bundler, no build step. The whole site is HTML, CSS, and five
-small JavaScript files on Cloudflare Pages.
+No framework, no bundler, no build step. The whole site is HTML, CSS, and a
+handful of small JavaScript files on Cloudflare Pages.
 
 ```
 site/
@@ -160,7 +208,9 @@ site/
   assets/css/site.css Both lighting states
   assets/js/
     nocturne.js       Lighting, moths, scores, toasts, Konami
+    radio.js          The corner radio
     pulse.js  lattice.js  echo.js  mothgame.js
+    veil.js  splice.js  wyrm.js  static.js
 ```
 
 Each game owns a fixed logical coordinate space — 800&times;600 for PULSE and

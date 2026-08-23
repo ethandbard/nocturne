@@ -350,6 +350,122 @@ hr.rule { border: 0; border-top: 1px solid var(--edge); margin: 3rem 0; }
 .cord__knob { fill: var(--ink-soft); }
 .cord:hover .cord__knob { fill: var(--green); }
 
+/* --------------------------------------------------------------- radio --- */
+
+/* Fixed to the bottom-left of every page — the cord owns the top-right, so
+   the two never collide. A small tab that expands upward into a panel on
+   click, rather than sitting open by default and competing with the sign. */
+.radio {
+  position: fixed;
+  left: clamp(1rem, 4vw, 2rem);
+  bottom: 1.4rem;
+  z-index: 9998;
+  font-family: var(--font-mono);
+}
+
+.radio__tab {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--edge);
+  background: var(--bg-raised);
+  box-shadow: var(--shadow-lift);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 200ms ease, transform 150ms ease;
+}
+.radio__tab:hover { border-color: color-mix(in srgb, var(--amber) 45%, var(--edge)); }
+.radio__tab:active { transform: scale(0.94); }
+
+.radio__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink-faint);
+  transition: background 200ms ease, box-shadow 200ms ease;
+}
+.radio[data-on="true"] .radio__dot {
+  background: var(--amber);
+  box-shadow: 0 0 calc(12px * var(--glow-strength)) var(--amber);
+  animation: breathe 3.4s ease-in-out infinite;
+}
+
+.radio__panel {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 0.7rem);
+  width: 232px;
+  background: linear-gradient(180deg, var(--bg-raised), var(--bg-sunken));
+  border: 1px solid var(--edge);
+  border-radius: 12px;
+  padding: 0.9rem 1rem 1.05rem;
+  box-shadow: var(--shadow-lift);
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+.radio[data-open="true"] .radio__panel {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.radio__label {
+  margin: 0 0 0.4rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.radio__station {
+  margin: 0 0 0.8rem;
+  font-size: 0.76rem;
+  line-height: 1.35;
+  min-height: 2.2em;
+  color: var(--ink-soft);
+}
+.radio__row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+.radio__btn {
+  flex: 1;
+  padding: 0.4rem 0;
+  border-radius: 8px;
+  border: 1px solid var(--edge);
+  background: var(--bg-sunken);
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+.radio__btn:hover { border-color: color-mix(in srgb, var(--amber) 45%, var(--edge)); color: var(--amber); }
+.radio__power[data-on="true"] {
+  color: var(--amber);
+  border-color: color-mix(in srgb, var(--amber) 55%, var(--edge));
+}
+.radio__vol {
+  width: 100%;
+  accent-color: var(--amber);
+}
+
+/* The YouTube iframe itself: real and playing, just too small to matter. Not
+   display:none — some browsers suspend playback on a hidden iframe. */
+.radio__stage {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* ------------------------------------------------------------- moths --- */
 
 /* Collectible. Some sit in plain sight at low contrast; others only render
@@ -526,4 +642,6 @@ html[data-lights="out"] .moth--locked { opacity: 0; pointer-events: none; }
   .wrap { width: calc(100% - 2rem); }
   .masthead { flex-direction: column; align-items: flex-start; gap: 0.7rem; }
   .cord { right: 1rem; height: 120px; }
+  .radio { left: 1rem; }
+  .radio__panel { width: min(232px, calc(100vw - 3rem)); }
 }
