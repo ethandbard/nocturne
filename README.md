@@ -105,9 +105,7 @@ To deploy by hand:
 npx wrangler pages deploy site --project-name=nocturne --branch=main
 ```
 
-`nocturne.ethandbard.com` is the custom domain. Until it is attached to the
-Pages project, that hostname still points at the VPS tunnel. Preview URLs
-are `*.pages.dev`.
+Custom domain: `nocturne.ethandbard.com`. Preview URLs are `*.pages.dev`.
 
 ## Accessibility and browser support
 
