@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>NOCTURNE</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-bd198b0d35c9195d8b4f32cb229a93cb.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-a9168dd0209406b7bb36b55883005983.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<meta name="mermaid-theme" content="dark">
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+<meta property="og:title" content="NOCTURNE">
+<meta property="og:description" content="A browser arcade that behaves like a place: cabinets on the floor, a light cord, and eight hidden moths that unlock a fourth.">
+<meta property="og:site_name" content="NOCTURNE">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">NOCTURNE</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Overview</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://nocturne.ethandbard.com"> 
+<span class="menu-text">Play</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://ethandbard.com"> <i class="bi bi-house" role="img" aria-label="ethandbard.com">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/ethandbard/nocturne"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#the-cabinets" id="toc-the-cabinets" class="nav-link active" data-scroll-target="#the-cabinets">The cabinets</a></li>
+  <li><a href="#the-radio" id="toc-the-radio" class="nav-link" data-scroll-target="#the-radio">The radio</a></li>
+  <li><a href="#what-makes-it-feel-like-one-building" id="toc-what-makes-it-feel-like-one-building" class="nav-link" data-scroll-target="#what-makes-it-feel-like-one-building">What makes it feel like one building</a>
+  <ul class="collapse">
+  <li><a href="#lighting-is-css-not-javascript" id="toc-lighting-is-css-not-javascript" class="nav-link" data-scroll-target="#lighting-is-css-not-javascript">Lighting is CSS, not JavaScript</a></li>
+  </ul></li>
+  <li><a href="#the-moths" id="toc-the-moths" class="nav-link" data-scroll-target="#the-moths">The moths</a>
+  <ul class="collapse">
+  <li><a href="#arriving-early" id="toc-arriving-early" class="nav-link" data-scroll-target="#arriving-early">Arriving early</a></li>
+  </ul></li>
+  <li><a href="#other-things-worth-clicking" id="toc-other-things-worth-clicking" class="nav-link" data-scroll-target="#other-things-worth-clicking">Other things worth clicking</a></li>
+  <li><a href="#how-it-is-built" id="toc-how-it-is-built" class="nav-link" data-scroll-target="#how-it-is-built">How it is built</a>
+  <ul class="collapse">
+  <li><a href="#deployment" id="toc-deployment" class="nav-link" data-scroll-target="#deployment">Deployment</a></li>
+  </ul></li>
+  <li><a href="#accessibility" id="toc-accessibility" class="nav-link" data-scroll-target="#accessibility">Accessibility</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/ethandbard/nocturne/blob/main/docs/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/ethandbard/nocturne/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">NOCTURNE</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="hero">
+<div class="kicker">
+<p>Static site · No framework · Cloudflare Pages</p>
+</div>
+<section id="a-browser-arcade-that-behaves-like-a-place" class="level1">
+<h1>A browser arcade that behaves like a place</h1>
+<div class="lede">
+<p>Six games sit on the floor and two stay sealed. A back room sits behind a bad address. A pull cord in the corner turns the lights off, a radio in the other corner plays something low, and some things only exist in the dark. What you do in one room shows up in another, because the arcade keeps notes.</p>
+</div>
+</section>
+</div>
+<p><a href="https://nocturne.ethandbard.com"><strong>Play it</strong></a> · <a href="https://github.com/ethandbard/nocturne">Source</a></p>
+<section id="the-cabinets" class="level2">
+<h2 class="anchored" data-anchor-id="the-cabinets">The cabinets</h2>
+<div class="trio">
+<div>
+<p><span class="num">01 · Reflex</span></p>
+<section id="pulse" class="level3">
+<h3 class="anchored" data-anchor-id="pulse">PULSE</h3>
+<p>Drift through purple shards and collect green motes. Every eight motes buys a shockwave. Movement eases toward the cursor rather than snapping to it, so a sudden reversal costs you something.</p>
+</section>
+</div>
+<div>
+<p><span class="num">02 · Puzzle</span></p>
+<section id="lattice" class="level3">
+<h3 class="anchored" data-anchor-id="lattice">LATTICE</h3>
+<p>Rotate conduits until current reaches every lamp. Boards are generated as a random spanning tree and then scrambled, which makes them always solvable and always fully connected.</p>
+</section>
+</div>
+<div>
+<p><span class="num">03 · Memory</span></p>
+<section id="echo" class="level3">
+<h3 class="anchored" data-anchor-id="echo">ECHO</h3>
+<p>Repeat a growing sequence of pads. The nine tones are a pentatonic scale, so a wrong answer still sounds like music instead of a buzzer.</p>
+</section>
+</div>
+<div>
+<p><span class="num">05 · Stealth</span></p>
+<section id="veil" class="level3">
+<h3 class="anchored" data-anchor-id="veil">VEIL</h3>
+<p>Sweeping searchlights read motion, not position. Fans mount on the walls and bars slide the whole floor, so one side of the room is never safe. Sprint through a beam and exposure spikes; hold still and it still climbs, slower.</p>
+</section>
+</div>
+<div>
+<p><span class="num">06 · Precision</span></p>
+<section id="splice" class="level3">
+<h3 class="anchored" data-anchor-id="splice">SPLICE</h3>
+<p>Two columns of colored terminals. Match every pair before the panel’s clock runs out — a clean splice buys a sliver of time back, a wrong guess costs much more than that.</p>
+</section>
+</div>
+<div>
+<p><span class="num">07 · Reflex</span></p>
+<section id="wyrm" class="level3">
+<h3 class="anchored" data-anchor-id="wyrm">WYRM</h3>
+<p>Classic snake, re-skinned as a glowing trail on a dark grid. Every mote eaten grows the trail and tightens the tick rate.</p>
+</section>
+</div>
+<div>
+<p><span class="num">04 · Sealed</span></p>
+<section id="moth" class="level3">
+<h3 class="anchored" data-anchor-id="moth">MOTH</h3>
+<p>Climb toward a lamp while your glow burns down. The glow is also your draw radius, so running low on light means you cannot see the next beam coming.</p>
+</section>
+</div>
+<div>
+<p><span class="num">08 · Sealed</span></p>
+<section id="static" class="level3">
+<h3 class="anchored" data-anchor-id="static">STATIC</h3>
+<p>Hold a drifting station until it locks. Each lock makes the next band thinner and faster. Leave the band too long and the signal dies. Unlocks once VEIL, SPLICE, and WYRM each have a real score — no relation to the moths.</p>
+</section>
+</div>
+<div>
+<p><span class="num">Unlisted · Puzzle</span></p>
+<section id="cipher" class="level3">
+<h3 class="anchored" data-anchor-id="cipher">CIPHER</h3>
+<p>A crossword whose answers are already in the building. Lives in the back room, which the 404 door opens onto.</p>
+</section>
+</div>
+<div>
+<p><span class="num">Unlisted · Search</span></p>
+<section id="seek" class="level3">
+<h3 class="anchored" data-anchor-id="seek">SEEK</h3>
+<p>A letter field of words the arcade already named. Drag a straight line in any of eight directions.</p>
+</section>
+</div>
+<div>
+<p><span class="num">Unlisted · Memory</span></p>
+<section id="twin" class="level3">
+<h3 class="anchored" data-anchor-id="twin">TWIN</h3>
+<p>Sixteen tiles, eight pairs. A miss turns back over. Fewer turns score higher.</p>
+</section>
+</div>
+</div>
+<p>MOTH is not reachable on a first visit. It opens once all eight hidden moths have been found. STATIC is a second, unrelated secret: it opens once VEIL, SPLICE, and WYRM each have a real score. CIPHER, SEEK, and TWIN are a third secret: they live at <code>/back.html</code>, and the 404 corridor door is how you get there.</p>
+</section>
+<section id="the-radio" class="level2">
+<h2 class="anchored" data-anchor-id="the-radio">The radio</h2>
+<p>A small FM tuner fixed to the bottom-left corner of every page. It plays Icecast streams from Nightride FM through HTML5 audio. Clicks to other rooms on the same origin swap the page in place so the player is not torn down. A refresh, a new tab, or the back button still starts it off, because browsers will not autoplay with sound before a gesture. Station and volume persist in <code>localStorage</code> under <code>nocturne.radio.station</code> and <code>nocturne.radio.volume</code>.</p>
+</section>
+<section id="what-makes-it-feel-like-one-building" class="level2">
+<h2 class="anchored" data-anchor-id="what-makes-it-feel-like-one-building">What makes it feel like one building</h2>
+<p>Most of the work is not in the games. It is in the thin layer above them that gives four separate pages a shared memory.</p>
+<p>Three values persist in <code>localStorage</code>, and every page reads all three:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Key</th>
+<th>Holds</th>
+<th>Visible effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>nocturne.lights</code></td>
+<td>Lit or dark</td>
+<td>The pull cord changes the whole site, not one page</td>
+</tr>
+<tr class="even">
+<td><code>nocturne.moths</code></td>
+<td>Which moths are caught</td>
+<td>Drives the fourth cabinet</td>
+</tr>
+<tr class="odd">
+<td><code>nocturne.best.&lt;game&gt;</code></td>
+<td>High scores</td>
+<td>The arcade floor reads them back onto the cards</td>
+</tr>
+</tbody>
+</table>
+<p><code>nocturne.js</code> owns all three. The games never touch storage directly — they call <code>Nocturne.submitScore()</code>, <code>Nocturne.revealMoth()</code>, and <code>Nocturne.toast()</code>, and get persistence, notices, and the unlock chain for free.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  A[Pull cord] --&gt;|writes lights| S[(localStorage)]
+  B[Catch a moth] --&gt;|writes moths| S
+  C[Finish a run] --&gt;|writes best score| S
+
+  S --&gt; D[Arcade floor: cabinet cards and the 4th cabinet]
+  S --&gt; E[Every page: lighting state]
+  S --&gt; F[Game pages: best score in the HUD]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="lighting-is-css-not-javascript" class="level3">
+<h3 class="anchored" data-anchor-id="lighting-is-css-not-javascript">Lighting is CSS, not JavaScript</h3>
+<p><code>data-lights="out"</code> on <code>&lt;html&gt;</code> swaps one block of custom properties. Every rule that differs between lit and dark reads from those properties rather than hard-coding a colour, so the entire site changes with a single attribute.</p>
+<p>That design is what lets the cord do more than theming. Several of the eight moths are rendered only in the dark, which makes the cord a search tool.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>The flash-of-lit-room problem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An inline script in each page’s <code>&lt;head&gt;</code> restores the lighting state <em>before first paint</em>. Waiting for <code>nocturne.js</code> to load would show a lit room for a frame or two to someone who deliberately turned the lights off — on every single navigation. It is three lines, and skipping them undoes the effect.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="the-moths" class="level2">
+<h2 class="anchored" data-anchor-id="the-moths">The moths</h2>
+<p>Eight, gated several different ways. The gating is the tutorial: finding them teaches you what the site can do.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Moth</th>
+<th>Where</th>
+<th>How it is gated</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>sign</code></td>
+<td>Arcade floor, resting on the neon sign</td>
+<td>Visible, deliberately low contrast</td>
+</tr>
+<tr class="even">
+<td><code>cellar</code></td>
+<td>Arcade floor, in the footer</td>
+<td>Lights out only</td>
+</tr>
+<tr class="odd">
+<td><code>pulse</code></td>
+<td>PULSE, on the screen bezel</td>
+<td>Lights out only</td>
+</tr>
+<tr class="even">
+<td><code>lattice</code></td>
+<td>LATTICE, corner of the board</td>
+<td>Clear one board</td>
+</tr>
+<tr class="odd">
+<td><code>echo</code></td>
+<td>ECHO, below the pads</td>
+<td>Reach round 5</td>
+</tr>
+<tr class="even">
+<td><code>about</code></td>
+<td>About page, in the footer</td>
+<td>Lights out only</td>
+</tr>
+<tr class="odd">
+<td><code>back</code></td>
+<td>Back room, by the sign</td>
+<td>Lights out only</td>
+</tr>
+<tr class="even">
+<td><code>wyrm</code></td>
+<td>WYRM, on the screen bezel</td>
+<td>Grow to length 10</td>
+</tr>
+</tbody>
+</table>
+<p>Two CSS classes keep those gates apart. <code>.moth--hidden</code> is revealed by darkness; <code>.moth--locked</code> stays invisible whatever the lights are doing, until a game calls <code>revealMoth()</code>. Using one class for both would have let a player collect the earned moths just by pulling the cord.</p>
+<p>Catching the eighth rewrites the fourth cabinet in place — no reload — and opens <code>/games/moth.html</code>.</p>
+<section id="arriving-early" class="level3">
+<h3 class="anchored" data-anchor-id="arriving-early">Arriving early</h3>
+<p>That URL is guessable, and that is fine. Someone who goes looking for it before finding the moths gets a <strong>SEALED</strong> panel that says how many they have and roughly where to look, rather than a redirect or a wall. Rewarding curiosity with information is the point.</p>
+</section>
+</section>
+<section id="other-things-worth-clicking" class="level2">
+<h2 class="anchored" data-anchor-id="other-things-worth-clicking">Other things worth clicking</h2>
+<ul>
+<li><strong>The 404.</strong> Any bad URL lands you in a dark back corridor. Your cursor is a torch, there is exactly one door, and finding it opens the back room.</li>
+<li><strong>The Konami code.</strong> Works anywhere. Does nothing useful.</li>
+<li><strong>The greeting.</strong> The line under the sign reads your clock, so it is not the same text at 3am as it is at noon.</li>
+</ul>
+</section>
+<section id="how-it-is-built" class="level2">
+<h2 class="anchored" data-anchor-id="how-it-is-built">How it is built</h2>
+<p>No framework, no bundler, no build step. The whole site is HTML, CSS, and a handful of small JavaScript files on Cloudflare Pages.</p>
+<pre><code>site/
+  index.html          Arcade floor
+  about.html          What it keeps, plus hints
+  404.html            The back corridor; the door opens `/back.html`
+  back.html           Hidden room for CIPHER, SEEK, and TWIN
+  games/              One page per cabinet
+  assets/css/site.css Both lighting states
+  assets/js/
+    nocturne.js       Lighting, moths, scores, toasts, Konami
+    radio.js          The corner radio, and in-site navigation that keeps it playing
+    pulse.js  lattice.js  echo.js  mothgame.js
+    veil.js  splice.js  wyrm.js  static.js
+    cipher.js  seek.js  twin.js</code></pre>
+<p>Each game owns a fixed logical coordinate space — 800×600 for PULSE and MOTH, 640×640 for LATTICE — and the canvas backing store is scaled by <code>devicePixelRatio</code>. Nothing in any simulation thinks in screen pixels, so the games behave identically at every window size.</p>
+<section id="deployment" class="level3">
+<h3 class="anchored" data-anchor-id="deployment">Deployment</h3>
+<p>Cloudflare Pages project <code>nocturne</code>. A push to <code>main</code> that touches <code>site/</code> uploads that folder with <code>wrangler pages deploy</code>. The custom domain is <code>nocturne.ethandbard.com</code>.</p>
+</section>
+</section>
+<section id="accessibility" class="level2">
+<h2 class="anchored" data-anchor-id="accessibility">Accessibility</h2>
+<p>Every interactive thing is a real <code>&lt;button&gt;</code> or <code>&lt;a&gt;</code>, so the moths and the ECHO pads are keyboard-reachable and announced by screen readers rather than being decorative <code>&lt;div&gt;</code>s with click handlers.</p>
+<p><code>prefers-reduced-motion</code> disables the sign flicker and the pad transitions. The games themselves need a pointer or the arrow keys; none is playable by keyboard alone on a touch device.</p>
+<p>Nothing breaks if <code>localStorage</code> is unavailable. Every read and write is wrapped, and the failure mode is an arcade that forgets you between pages.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/ethandbard\.github\.io\/nocturne\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Built with Quarto. No framework underneath the arcade either.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/ethandbard/nocturne/blob/main/docs/index.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/ethandbard/nocturne/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://ethandbard.com">
+<p>ethandbard.com</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://nocturne.ethandbard.com">
+<p>Play</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/ethandbard/nocturne">
+<p>Source</p>
+</a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

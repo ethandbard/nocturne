@@ -1,0 +1,58 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "NOCTURNE",
+    "section": "",
+    "text": "Static site · No framework · Cloudflare Pages\n\n\n\n\nSix games sit on the floor and two stay sealed. A back room sits behind a bad address. A pull cord in the corner turns the lights off, a radio in the other corner plays something low, and some things only exist in the dark. What you do in one room shows up in another, because the arcade keeps notes.\nPlay it · Source"
+  },
+  {
+    "objectID": "index.html#the-cabinets",
+    "href": "index.html#the-cabinets",
+    "title": "NOCTURNE",
+    "section": "The cabinets",
+    "text": "The cabinets\n\n\n01 · Reflex\n\nPULSE\nDrift through purple shards and collect green motes. Every eight motes buys a shockwave. Movement eases toward the cursor rather than snapping to it, so a sudden reversal costs you something.\n\n\n\n02 · Puzzle\n\nLATTICE\nRotate conduits until current reaches every lamp. Boards are generated as a random spanning tree and then scrambled, which makes them always solvable and always fully connected.\n\n\n\n03 · Memory\n\nECHO\nRepeat a growing sequence of pads. The nine tones are a pentatonic scale, so a wrong answer still sounds like music instead of a buzzer.\n\n\n\n05 · Stealth\n\nVEIL\nSweeping searchlights read motion, not position. Fans mount on the walls and bars slide the whole floor, so one side of the room is never safe. Sprint through a beam and exposure spikes; hold still and it still climbs, slower.\n\n\n\n06 · Precision\n\nSPLICE\nTwo columns of colored terminals. Match every pair before the panel’s clock runs out — a clean splice buys a sliver of time back, a wrong guess costs much more than that.\n\n\n\n07 · Reflex\n\nWYRM\nClassic snake, re-skinned as a glowing trail on a dark grid. Every mote eaten grows the trail and tightens the tick rate.\n\n\n\n04 · Sealed\n\nMOTH\nClimb toward a lamp while your glow burns down. The glow is also your draw radius, so running low on light means you cannot see the next beam coming.\n\n\n\n08 · Sealed\n\nSTATIC\nHold a drifting station until it locks. Each lock makes the next band thinner and faster. Leave the band too long and the signal dies. Unlocks once VEIL, SPLICE, and WYRM each have a real score — no relation to the moths.\n\n\n\nUnlisted · Puzzle\n\nCIPHER\nA crossword whose answers are already in the building. Lives in the back room, which the 404 door opens onto.\n\n\n\nUnlisted · Search\n\nSEEK\nA letter field of words the arcade already named. Drag a straight line in any of eight directions.\n\n\n\nUnlisted · Memory\n\nTWIN\nSixteen tiles, eight pairs. A miss turns back over. Fewer turns score higher.\n\n\n\nMOTH is not reachable on a first visit. It opens once all eight hidden moths have been found. STATIC is a second, unrelated secret: it opens once VEIL, SPLICE, and WYRM each have a real score. CIPHER, SEEK, and TWIN are a third secret: they live at /back.html, and the 404 corridor door is how you get there."
+  },
+  {
+    "objectID": "index.html#the-radio",
+    "href": "index.html#the-radio",
+    "title": "NOCTURNE",
+    "section": "The radio",
+    "text": "The radio\nA small FM tuner fixed to the bottom-left corner of every page. It plays Icecast streams from Nightride FM through HTML5 audio. Clicks to other rooms on the same origin swap the page in place so the player is not torn down. A refresh, a new tab, or the back button still starts it off, because browsers will not autoplay with sound before a gesture. Station and volume persist in localStorage under nocturne.radio.station and nocturne.radio.volume."
+  },
+  {
+    "objectID": "index.html#what-makes-it-feel-like-one-building",
+    "href": "index.html#what-makes-it-feel-like-one-building",
+    "title": "NOCTURNE",
+    "section": "What makes it feel like one building",
+    "text": "What makes it feel like one building\nMost of the work is not in the games. It is in the thin layer above them that gives four separate pages a shared memory.\nThree values persist in localStorage, and every page reads all three:\n\n\n\n\n\n\n\n\nKey\nHolds\nVisible effect\n\n\n\n\nnocturne.lights\nLit or dark\nThe pull cord changes the whole site, not one page\n\n\nnocturne.moths\nWhich moths are caught\nDrives the fourth cabinet\n\n\nnocturne.best.&lt;game&gt;\nHigh scores\nThe arcade floor reads them back onto the cards\n\n\n\nnocturne.js owns all three. The games never touch storage directly — they call Nocturne.submitScore(), Nocturne.revealMoth(), and Nocturne.toast(), and get persistence, notices, and the unlock chain for free.\n\n\n\n\n\nflowchart LR\n  A[Pull cord] --&gt;|writes lights| S[(localStorage)]\n  B[Catch a moth] --&gt;|writes moths| S\n  C[Finish a run] --&gt;|writes best score| S\n\n  S --&gt; D[Arcade floor: cabinet cards and the 4th cabinet]\n  S --&gt; E[Every page: lighting state]\n  S --&gt; F[Game pages: best score in the HUD]\n\n\n\n\n\n\n\nLighting is CSS, not JavaScript\ndata-lights=\"out\" on &lt;html&gt; swaps one block of custom properties. Every rule that differs between lit and dark reads from those properties rather than hard-coding a colour, so the entire site changes with a single attribute.\nThat design is what lets the cord do more than theming. Several of the eight moths are rendered only in the dark, which makes the cord a search tool.\n\n\n\n\n\n\nNoteThe flash-of-lit-room problem\n\n\n\nAn inline script in each page’s &lt;head&gt; restores the lighting state before first paint. Waiting for nocturne.js to load would show a lit room for a frame or two to someone who deliberately turned the lights off — on every single navigation. It is three lines, and skipping them undoes the effect."
+  },
+  {
+    "objectID": "index.html#the-moths",
+    "href": "index.html#the-moths",
+    "title": "NOCTURNE",
+    "section": "The moths",
+    "text": "The moths\nEight, gated several different ways. The gating is the tutorial: finding them teaches you what the site can do.\n\n\n\n\n\n\n\n\nMoth\nWhere\nHow it is gated\n\n\n\n\nsign\nArcade floor, resting on the neon sign\nVisible, deliberately low contrast\n\n\ncellar\nArcade floor, in the footer\nLights out only\n\n\npulse\nPULSE, on the screen bezel\nLights out only\n\n\nlattice\nLATTICE, corner of the board\nClear one board\n\n\necho\nECHO, below the pads\nReach round 5\n\n\nabout\nAbout page, in the footer\nLights out only\n\n\nback\nBack room, by the sign\nLights out only\n\n\nwyrm\nWYRM, on the screen bezel\nGrow to length 10\n\n\n\nTwo CSS classes keep those gates apart. .moth--hidden is revealed by darkness; .moth--locked stays invisible whatever the lights are doing, until a game calls revealMoth(). Using one class for both would have let a player collect the earned moths just by pulling the cord.\nCatching the eighth rewrites the fourth cabinet in place — no reload — and opens /games/moth.html.\n\nArriving early\nThat URL is guessable, and that is fine. Someone who goes looking for it before finding the moths gets a SEALED panel that says how many they have and roughly where to look, rather than a redirect or a wall. Rewarding curiosity with information is the point."
+  },
+  {
+    "objectID": "index.html#other-things-worth-clicking",
+    "href": "index.html#other-things-worth-clicking",
+    "title": "NOCTURNE",
+    "section": "Other things worth clicking",
+    "text": "Other things worth clicking\n\nThe 404. Any bad URL lands you in a dark back corridor. Your cursor is a torch, there is exactly one door, and finding it opens the back room.\nThe Konami code. Works anywhere. Does nothing useful.\nThe greeting. The line under the sign reads your clock, so it is not the same text at 3am as it is at noon."
+  },
+  {
+    "objectID": "index.html#how-it-is-built",
+    "href": "index.html#how-it-is-built",
+    "title": "NOCTURNE",
+    "section": "How it is built",
+    "text": "How it is built\nNo framework, no bundler, no build step. The whole site is HTML, CSS, and a handful of small JavaScript files on Cloudflare Pages.\nsite/\n  index.html          Arcade floor\n  about.html          What it keeps, plus hints\n  404.html            The back corridor; the door opens `/back.html`\n  back.html           Hidden room for CIPHER, SEEK, and TWIN\n  games/              One page per cabinet\n  assets/css/site.css Both lighting states\n  assets/js/\n    nocturne.js       Lighting, moths, scores, toasts, Konami\n    radio.js          The corner radio, and in-site navigation that keeps it playing\n    pulse.js  lattice.js  echo.js  mothgame.js\n    veil.js  splice.js  wyrm.js  static.js\n    cipher.js  seek.js  twin.js\nEach game owns a fixed logical coordinate space — 800×600 for PULSE and MOTH, 640×640 for LATTICE — and the canvas backing store is scaled by devicePixelRatio. Nothing in any simulation thinks in screen pixels, so the games behave identically at every window size.\n\nDeployment\nCloudflare Pages project nocturne. A push to main that touches site/ uploads that folder with wrangler pages deploy. The custom domain is nocturne.ethandbard.com."
+  },
+  {
+    "objectID": "index.html#accessibility",
+    "href": "index.html#accessibility",
+    "title": "NOCTURNE",
+    "section": "Accessibility",
+    "text": "Accessibility\nEvery interactive thing is a real &lt;button&gt; or &lt;a&gt;, so the moths and the ECHO pads are keyboard-reachable and announced by screen readers rather than being decorative &lt;div&gt;s with click handlers.\nprefers-reduced-motion disables the sign flicker and the pad transitions. The games themselves need a pointer or the arrow keys; none is playable by keyboard alone on a touch device.\nNothing breaks if localStorage is unavailable. Every read and write is wrapped, and the failure mode is an arcade that forgets you between pages."
+  }
+]
