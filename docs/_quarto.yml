@@ -1,0 +1,61 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - index.qmd
+  resources:
+    - .nojekyll
+
+website:
+  title: "NOCTURNE"
+  description: "A browser arcade that behaves like a place: three games, a light cord, and five hidden moths that unlock a fourth."
+  site-url: https://ethandbard.github.io/nocturne/
+  repo-url: https://github.com/ethandbard/nocturne
+  repo-subdir: docs
+  repo-branch: main
+  repo-actions: [source, issue]
+  open-graph: true
+  search: false
+  page-navigation: true
+  navbar:
+    background: "#14121F"
+    foreground: "#E8E6F0"
+    left:
+      - href: index.qmd
+        text: Overview
+      - text: Play
+        href: https://nocturne.ethandbard.com
+    right:
+      - icon: house
+        href: https://ethandbard.com
+        aria-label: ethandbard.com
+      - icon: github
+        href: https://github.com/ethandbard/nocturne
+        aria-label: GitHub repository
+  page-footer:
+    left: "Built with Quarto. No framework underneath the arcade either."
+    right:
+      - href: https://ethandbard.com
+        text: ethandbard.com
+      - href: https://nocturne.ethandbard.com
+        text: Play
+      - href: https://github.com/ethandbard/nocturne
+        text: Source
+
+format:
+  html:
+    theme:
+      - darkly
+      - theme.scss
+    toc: true
+    toc-location: right
+    toc-title: On this page
+    smooth-scroll: true
+    link-external-icon: true
+    link-external-newtab: true
+    mermaid:
+      theme: dark
+    page-layout: article
+    mainfont: Space Grotesk
+    monofont: Space Mono
+    highlight-style: a11y-dark

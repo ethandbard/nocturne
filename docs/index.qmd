@@ -1,0 +1,198 @@
+---
+title: "NOCTURNE"
+---
+
+::: {.hero}
+::: {.kicker}
+Static site &middot; No framework &middot; One container
+:::
+
+# A browser arcade that behaves like a place
+
+::: {.lede}
+Three games sit on the floor and a fourth stays sealed. A pull cord in the
+corner turns the lights off, and some things only exist in the dark. What you
+do in one room shows up in another, because the arcade keeps notes.
+:::
+:::
+
+[**Play it**](https://nocturne.ethandbard.com) &middot;
+[Source](https://github.com/ethandbard/nocturne)
+
+## The cabinets
+
+::: {.trio}
+::: {}
+[01 &middot; Reflex]{.num}
+
+### PULSE
+
+Drift through purple shards and collect green motes. Every eight motes buys a
+shockwave. Movement eases toward the cursor rather than snapping to it, so a
+sudden reversal costs you something.
+:::
+
+::: {}
+[02 &middot; Puzzle]{.num}
+
+### LATTICE
+
+Rotate conduits until current reaches every lamp. Boards are generated as a
+random spanning tree and then scrambled, which makes them always solvable and
+always fully connected.
+:::
+
+::: {}
+[03 &middot; Memory]{.num}
+
+### ECHO
+
+Repeat a growing sequence of pads. The nine tones are a pentatonic scale, so a
+wrong answer still sounds like music instead of a buzzer.
+:::
+
+::: {}
+[04 &middot; Sealed]{.num}
+
+### MOTH
+
+Climb toward a lamp while your glow burns down. The glow is also your draw
+radius, so running low on light means you cannot see the next beam coming.
+:::
+:::
+
+MOTH is not reachable on a first visit. It opens once all five hidden moths
+have been found.
+
+## What makes it feel like one building
+
+Most of the work is not in the games. It is in the thin layer above them that
+gives four separate pages a shared memory.
+
+Three values persist in `localStorage`, and every page reads all three:
+
+| Key | Holds | Visible effect |
+| --- | --- | --- |
+| `nocturne.lights` | Lit or dark | The pull cord changes the whole site, not one page |
+| `nocturne.moths` | Which moths are caught | Drives the fourth cabinet |
+| `nocturne.best.<game>` | High scores | The arcade floor reads them back onto the cards |
+
+`nocturne.js` owns all three. The games never touch storage directly — they
+call `Nocturne.submitScore()`, `Nocturne.revealMoth()`, and `Nocturne.toast()`,
+and get persistence, notices, and the unlock chain for free.
+
+```{mermaid}
+flowchart LR
+  A[Pull cord] -->|writes lights| S[(localStorage)]
+  B[Catch a moth] -->|writes moths| S
+  C[Finish a run] -->|writes best score| S
+
+  S --> D[Arcade floor: cabinet cards and the 4th cabinet]
+  S --> E[Every page: lighting state]
+  S --> F[Game pages: best score in the HUD]
+```
+
+### Lighting is CSS, not JavaScript
+
+`data-lights="out"` on `<html>` swaps one block of custom properties. Every rule
+that differs between lit and dark reads from those properties rather than
+hard-coding a colour, so the entire site changes with a single attribute.
+
+That design is what lets the cord do more than theming. Two of the five moths
+are rendered only in the dark, which makes the cord a search tool.
+
+::: {.callout-note}
+## The flash-of-lit-room problem
+
+An inline script in each page's `<head>` restores the lighting state *before
+first paint*. Waiting for `nocturne.js` to load would show a lit room for a
+frame or two to someone who deliberately turned the lights off — on every
+single navigation. It is three lines, and skipping them undoes the effect.
+:::
+
+## The moths
+
+Five, gated three different ways. The gating is the tutorial: finding them
+teaches you what the site can do.
+
+| Moth | Where | How it is gated |
+| --- | --- | --- |
+| `sign` | Arcade floor, resting on the neon sign | Visible, deliberately low contrast |
+| `cellar` | Arcade floor, in the footer | Lights out only |
+| `pulse` | PULSE, on the screen bezel | Lights out only |
+| `lattice` | LATTICE, corner of the board | Clear one board |
+| `echo` | ECHO, below the pads | Reach round 5 |
+
+Two CSS classes keep those gates apart. `.moth--hidden` is revealed by
+darkness; `.moth--locked` stays invisible whatever the lights are doing, until a
+game calls `revealMoth()`. Using one class for both would have let a player
+collect the earned moths just by pulling the cord.
+
+Catching the fifth rewrites the fourth cabinet in place — no reload — and opens
+`/games/moth.html`.
+
+### Arriving early
+
+That URL is guessable, and that is fine. Someone who goes looking for it before
+finding the moths gets a **SEALED** panel that says how many they have and
+roughly where to look, rather than a redirect or a wall. Rewarding curiosity
+with information is the point.
+
+## Other things worth clicking
+
+- **The 404.** Any bad URL lands you in a dark back corridor. Your cursor is a
+  torch, there is exactly one door, and finding it takes you home.
+- **The Konami code.** Works anywhere. Does nothing useful.
+- **The greeting.** The line under the sign reads your clock, so it is not the
+  same text at 3am as it is at noon.
+
+## How it is built
+
+No framework, no bundler, no build step. The whole site is HTML, CSS, and five
+small JavaScript files, served by nginx.
+
+```
+site/
+  index.html          Arcade floor
+  about.html          What it keeps, plus hints
+  404.html            The back corridor
+  games/              One page per cabinet
+  assets/css/site.css Both lighting states
+  assets/js/
+    nocturne.js       Lighting, moths, scores, toasts, Konami
+    pulse.js  lattice.js  echo.js  mothgame.js
+```
+
+Each game owns a fixed logical coordinate space — 800&times;600 for PULSE and
+MOTH, 640&times;640 for LATTICE — and the canvas backing store is scaled by
+`devicePixelRatio`. Nothing in any simulation thinks in screen pixels, so the
+games behave identically at every window size.
+
+### Deployment
+
+One nginx container on the Hetzner VPS at `/opt/nocturne`, joined to the shared
+`edge` Docker network and published through the existing Cloudflare named
+tunnel. The container publishes no host port; `cloudflared` reaches it by
+container name, so the app is never exposed on the VPS public IP.
+
+```bash
+tar czf - Dockerfile docker-compose.yml nginx.conf .dockerignore site \
+  | ssh -i ~/.ssh/hetzner_vps root@65.109.238.176 'cd /opt/nocturne && tar xzf -'
+```
+
+```bash
+ssh -i ~/.ssh/hetzner_vps root@65.109.238.176 'cd /opt/nocturne && docker compose up -d --build'
+```
+
+## Accessibility
+
+Every interactive thing is a real `<button>` or `<a>`, so the moths and the ECHO
+pads are keyboard-reachable and announced by screen readers rather than being
+decorative `<div>`s with click handlers.
+
+`prefers-reduced-motion` disables the sign flicker and the pad transitions. The
+games themselves need a pointer or the arrow keys; none is playable by keyboard
+alone on a touch device.
+
+Nothing breaks if `localStorage` is unavailable. Every read and write is
+wrapped, and the failure mode is an arcade that forgets you between pages.

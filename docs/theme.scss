@@ -1,0 +1,234 @@
+/*-- scss:defaults --*/
+
+// Same structure as the other project docs sites, repainted in NOCTURNE's
+// palette so the docs read as the same product as the arcade they describe.
+
+$ground:   #0B0A12;
+$surface:  #14121F;
+$raised:   #1D1A2C;
+$line:     #2A2440;
+$ink:      #E8E6F0;
+$ink-dim:  #9B96B3;
+$ink-mute: #575269;
+$accent:   #A855F7;
+$blue:     #38BDF8;
+$green:    #4ADE80;
+
+$primary: $accent;
+$body-bg: $ground;
+$body-color: $ink-dim;
+$link-color: $blue;
+$link-hover-color: $green;
+$headings-color: $ink;
+
+$font-family-sans-serif: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+$font-family-monospace: "Space Mono", ui-monospace, Menlo, monospace;
+$headings-font-weight: 700;
+$headings-letter-spacing: -0.02em;
+
+$navbar-bg: $surface;
+$navbar-fg: $ink;
+$navbar-hl: $accent;
+$footer-bg: $ground;
+$footer-fg: $ink-mute;
+
+$toc-color: $ink-dim;
+$toc-active-border: $accent;
+$toc-active-color: $ink;
+
+$code-bg: $raised;
+$code-color: $ink;
+$code-block-bg: $surface;
+$code-block-border-left: $accent;
+
+$table-bg: $surface;
+$table-border-color: $line;
+$table-striped-bg: $raised;
+
+$card-bg: $surface;
+$card-border-color: $line;
+$border-radius: 10px;
+$nav-link-color: $ink-dim;
+
+/*-- scss:rules --*/
+
+@import url("https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap");
+
+:root {
+  --ground: #{$ground};
+  --surface: #{$surface};
+  --raised: #{$raised};
+  --line: #{$line};
+  --ink: #{$ink};
+  --ink-dim: #{$ink-dim};
+  --ink-mute: #{$ink-mute};
+  --accent: #{$accent};
+  --blue: #{$blue};
+  --green: #{$green};
+}
+
+body {
+  background: var(--ground);
+  color: var(--ink-dim);
+  -webkit-font-smoothing: antialiased;
+}
+
+#quarto-header .navbar {
+  border-bottom: 1px solid var(--line);
+}
+
+.navbar-brand {
+  font-family: "Silkscreen", monospace;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+  color: var(--ink) !important;
+}
+
+.navbar-nav .nav-link {
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+
+.navbar-nav .nav-link.active {
+  color: var(--ink) !important;
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+/* ----- hero ----- */
+
+.hero {
+  margin: 0 0 2.4rem;
+  padding: 0.4rem 0 0.2rem;
+}
+
+.kicker,
+.num,
+.lede {
+  p { margin: 0; }
+}
+
+.kicker {
+  font-family: $font-family-monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 0.7rem;
+}
+
+.hero h1 {
+  font-family: "Silkscreen", monospace;
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  margin: 0 0 1.1rem;
+  text-shadow: 0 0 22px rgba(168, 85, 247, 0.55);
+}
+
+.lede {
+  font-size: 1.1rem;
+  line-height: 1.55;
+  color: var(--ink-dim);
+  max-width: 44rem;
+  margin: 0;
+}
+
+/* ----- cabinet cards ----- */
+
+.trio {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin: 0 0 2.2rem;
+}
+
+.trio article {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-top: 2px solid var(--accent);
+  border-radius: 10px;
+  padding: 1.1rem 1.15rem 1.15rem;
+}
+
+.trio article:nth-child(1) { border-top-color: var(--blue); }
+.trio article:nth-child(2) { border-top-color: var(--accent); }
+.trio article:nth-child(3) { border-top-color: var(--green); }
+.trio article:nth-child(4) { border-top-color: #FBBF24; }
+
+.trio .num {
+  font-family: $font-family-monospace;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  display: block;
+  margin-bottom: 0.45rem;
+}
+
+.trio h3 {
+  font-family: "Silkscreen", monospace;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  margin: 0 0 0.5rem;
+}
+
+.trio p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  .trio { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 520px) {
+  .trio { grid-template-columns: 1fr; }
+}
+
+/* ----- layout polish ----- */
+
+#title-block-header { display: none; }
+
+main.content { padding-top: 1.4rem; }
+
+h2 {
+  font-size: 1.3rem;
+  margin-top: 2.2rem;
+  padding-top: 0.4rem;
+}
+
+h2::after {
+  content: "";
+  display: block;
+  width: 2.2rem;
+  height: 2px;
+  background: var(--accent);
+  margin-top: 0.45rem;
+}
+
+.callout { border-radius: 10px; }
+
+.mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+nav[role="doc-toc"] ul a { font-size: 0.84rem; }
+
+.nav-footer {
+  border-top: 1px solid var(--line);
+  font-size: 0.82rem;
+}
+
+table {
+  font-size: 0.92rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+}
