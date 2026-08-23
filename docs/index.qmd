@@ -106,11 +106,12 @@ SPLICE, and WYRM have each been finished once.
 ## The radio
 
 A small FM tuner fixed to the bottom-left corner of every page. It plays
-Icecast streams from Nightride FM through HTML5 audio. Power state never
-survives a navigation on a plain multi-page site like this one, so it
-always starts off. The chosen station and volume persist in
-`localStorage` under `nocturne.radio.station` and `nocturne.radio.volume`,
-the same way everything else here persists.
+Icecast streams from Nightride FM through HTML5 audio. Walking from room
+to room does not stop it. `shell-boot.js` rewrites the top window into a
+chrome shell and loads each page in a frame, so the player is never torn
+down. A refresh or a new tab still starts off, because browsers will not
+autoplay with sound before a gesture. Station and volume persist in
+`localStorage` under `nocturne.radio.station` and `nocturne.radio.volume`.
 
 ## What makes it feel like one building
 
@@ -209,6 +210,8 @@ site/
   assets/js/
     nocturne.js       Lighting, moths, scores, toasts, Konami
     radio.js          The corner radio: HTML5 audio streams
+    shell-boot.js     Chrome shell so the radio survives room changes
+    shell.js          Address bar, title, and lights follow #room
     pulse.js  lattice.js  echo.js  mothgame.js
     veil.js  splice.js  wyrm.js  static.js
 ```

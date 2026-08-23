@@ -30,10 +30,12 @@ and WYRM have each been finished once, and has nothing to do with the moths.
 ## The radio
 
 A small FM tuner sits in the bottom-left corner of every page. It plays a
-curated set of lo-fi and synthwave internet radio streams. Playback stops
-when you leave a page, because every load tears the player down. Station
-and volume persist in `localStorage`, so the next time you turn it on it
-picks up where you left off. See `site/assets/js/radio.js`.
+curated set of lo-fi and synthwave internet radio streams. Walking from
+room to room does not stop it. The top window is a chrome shell, and each
+page loads in a frame so the player is never torn down. A refresh or a
+new tab still starts off, because browsers will not autoplay with sound
+before a gesture. Station and volume persist in `localStorage`. See
+`site/assets/js/radio.js` and `site/assets/js/shell-boot.js`.
 
 ## Running it locally
 
@@ -59,6 +61,8 @@ site/
   assets/js/
     nocturne.js       Shared layer: lighting, moths, scores, toasts, Konami.
     radio.js          The corner radio: stations, volume, HTML5 audio streams.
+    shell-boot.js     Rewrites the top window into a chrome shell for the radio.
+    shell.js          Keeps the address bar, title, and lights in step with #room.
     pulse.js  lattice.js  echo.js  mothgame.js
     veil.js  splice.js  wyrm.js  static.js
   _headers            Noindex on `*.pages.dev` preview URLs.

@@ -5,14 +5,17 @@
  * Nightride FM's mounts send CORS * and honour a site Referer, which is
  * what lets the oscilloscope read the stream.
  *
- * Playback never survives a navigation — this is a plain multi-page site, so
- * every load tears the player down. What persists is the choice: which
- * station, and how loud. Power always starts off, so nothing plays with
- * sound before you have asked for it.
+ * The player lives on the top window. shell-boot.js rewrites that window into
+ * a chrome shell and loads each room in #room, so walking the arcade does not
+ * tear the Audio element down. Framed copies of this file no-op. A real
+ * top-level load (new tab, refresh) still starts off — browsers will not
+ * autoplay with sound before a gesture.
  */
 
 (function () {
   "use strict";
+
+  if (window !== window.top) return;
 
   var STATIONS = [
     {
@@ -169,6 +172,12 @@
 
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") setOpen(false);
+    });
+
+    /* Clicks inside #room happen in another document, so the usual outside-
+       click listener never sees them. Focusing the frame blurs this window. */
+    window.addEventListener("blur", function () {
+      setOpen(false);
     });
 
     paintStation();
