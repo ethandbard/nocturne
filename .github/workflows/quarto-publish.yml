@@ -1,0 +1,43 @@
+# Renders docs/ and publishes the static site to the gh-pages branch, which
+# GitHub Pages serves at https://ethandbard.github.io/nocturne/.
+#
+# This is the docs site only. The arcade itself is a container on the VPS and is
+# deployed over SSH, so nothing here touches what is live at
+# nocturne.ethandbard.com.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - ".github/workflows/quarto-publish.yml"
+
+name: Publish docs
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render
+        uses: quarto-dev/quarto-actions/render@v2
+        with:
+          path: docs
+
+      - name: Disable Jekyll processing
+        run: touch docs/_site/.nojekyll
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_site
+          # Keeps gh-pages from accumulating every historical build.
+          force_orphan: true
