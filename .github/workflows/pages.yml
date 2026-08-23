@@ -1,0 +1,51 @@
+# Direct-upload the arcade (site/) to Cloudflare Pages.
+# Production project: nocturne. Custom domain: nocturne.ethandbard.com.
+#
+# This is the live arcade. The docs site is a separate workflow
+# (quarto-publish.yml) and still publishes to GitHub Pages.
+#
+# One-time: a Cloudflare API token with Account / Cloudflare Pages / Edit
+# as GitHub Actions secret CLOUDFLARE_API_TOKEN. The homepage repo uses the
+# same token permission; this project needs its own copy of that secret.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+name: Deploy arcade to Cloudflare Pages
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    name: Upload site/
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Require CLOUDFLARE_API_TOKEN
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "Set repository secret CLOUDFLARE_API_TOKEN."
+            echo "Token permission: Account / Cloudflare Pages / Edit."
+            exit 1
+          fi
+
+      - name: Deploy to Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: f6afef234770add442ef630ebd2e82c9
+          wranglerVersion: "4.45.3"
+          command: pages deploy site --project-name=nocturne --branch=main
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: f6afef234770add442ef630ebd2e82c9

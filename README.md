@@ -8,7 +8,7 @@ Live at **[nocturne.ethandbard.com](https://nocturne.ethandbard.com)**.
 Docs at **[ethandbard.github.io/nocturne](https://ethandbard.github.io/nocturne/)**.
 
 No framework, no build step, no server-side state. Static HTML, CSS, and
-JavaScript served by nginx in a container.
+JavaScript on Cloudflare Pages.
 
 ## The games
 
@@ -30,12 +30,9 @@ Any static file server works, because nothing needs a backend:
 npx --yes http-server site -p 4330 -c-1
 ```
 
-Then open <http://localhost:4330>. To exercise the nginx config as well —
-extensionless URLs, the custom 404, cache headers — run the container instead:
-
-```bash
-docker compose up --build
-```
+Then open <http://localhost:4330>. `404.html` is the custom not-found page.
+Pages also redirects `/about.html` to `/about`; the committed links still use
+the `.html` form, and both resolve.
 
 ## Layout
 
@@ -49,9 +46,7 @@ site/
   assets/js/
     nocturne.js       Shared layer: lighting, moths, scores, toasts, Konami.
     pulse.js  lattice.js  echo.js  mothgame.js
-nginx.conf            Routing, cache policy, /healthz.
-Dockerfile            nginx:alpine plus the site. No build stage.
-docker-compose.yml    Joins the shared `edge` network. Publishes no host port.
+  _headers            Noindex on `*.pages.dev` preview URLs.
 ```
 
 ## How the pieces connect
@@ -97,19 +92,22 @@ Catching all five rewrites the fourth cabinet in place and opens
 
 ## Deployment
 
-One container on the Hetzner VPS at `/opt/nocturne`, joined to the shared `edge`
-Docker network, published at `nocturne.ethandbard.com` through the existing
-Cloudflare named tunnel. Nothing is cloned on the server — deploying means
-copying the tree over SSH and rebuilding:
+Cloudflare Pages project `nocturne`. Push to `main` under `site/` runs
+`.github/workflows/pages.yml`, which uploads `site/` with
+`wrangler pages deploy`. Same shape as the homepage: no VPS rebuild.
+
+The Action needs a repository secret `CLOUDFLARE_API_TOKEN` with Account /
+Cloudflare Pages / Edit. Account ID is in the workflow.
+
+To deploy by hand:
 
 ```bash
-tar czf - Dockerfile docker-compose.yml nginx.conf .dockerignore site \
-  | ssh -i ~/.ssh/hetzner_vps root@65.109.238.176 'cd /opt/nocturne && tar xzf -'
-ssh -i ~/.ssh/hetzner_vps root@65.109.238.176 'cd /opt/nocturne && docker compose up -d --build'
+npx wrangler pages deploy site --project-name=nocturne --branch=main
 ```
 
-The container publishes no host port. `cloudflared` reaches it by container
-name over `edge`, so the app is never exposed on the VPS public IP.
+`nocturne.ethandbard.com` is the custom domain. Until it is attached to the
+Pages project, that hostname still points at the VPS tunnel. Preview URLs
+are `*.pages.dev`.
 
 ## Accessibility and browser support
 

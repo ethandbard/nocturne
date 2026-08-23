@@ -4,7 +4,7 @@ title: "NOCTURNE"
 
 ::: {.hero}
 ::: {.kicker}
-Static site &middot; No framework &middot; One container
+Static site &middot; No framework &middot; Cloudflare Pages
 :::
 
 # A browser arcade that behaves like a place
@@ -149,7 +149,7 @@ with information is the point.
 ## How it is built
 
 No framework, no bundler, no build step. The whole site is HTML, CSS, and five
-small JavaScript files, served by nginx.
+small JavaScript files on Cloudflare Pages.
 
 ```
 site/
@@ -170,19 +170,9 @@ games behave identically at every window size.
 
 ### Deployment
 
-One nginx container on the Hetzner VPS at `/opt/nocturne`, joined to the shared
-`edge` Docker network and published through the existing Cloudflare named
-tunnel. The container publishes no host port; `cloudflared` reaches it by
-container name, so the app is never exposed on the VPS public IP.
-
-```bash
-tar czf - Dockerfile docker-compose.yml nginx.conf .dockerignore site \
-  | ssh -i ~/.ssh/hetzner_vps root@65.109.238.176 'cd /opt/nocturne && tar xzf -'
-```
-
-```bash
-ssh -i ~/.ssh/hetzner_vps root@65.109.238.176 'cd /opt/nocturne && docker compose up -d --build'
-```
+Cloudflare Pages project `nocturne`. A push to `main` that touches `site/`
+uploads that folder with `wrangler pages deploy`. The custom domain is
+`nocturne.ethandbard.com`.
 
 ## Accessibility
 

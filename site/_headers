@@ -1,0 +1,8 @@
+# Preview hostnames should not be indexed. The custom domain is the canonical
+# origin once it is attached; Pages already sends noindex on preview URLs, and
+# this keeps that explicit if the default ever changes.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex
